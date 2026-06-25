@@ -47,9 +47,6 @@ export default function LojaPeca() {
       <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 5 }}>
         <span onClick={() => navigate(-1)} style={{ color: '#fff', fontSize: 24, background: 'rgba(0,0,0,0.4)', borderRadius: '50%', width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>×</span>
       </div>
-      <div style={{ position: 'absolute', top: 16, right: 16, zIndex: 5 }}>
-        <span style={{ color: '#fff', fontSize: 22, background: 'rgba(0,0,0,0.4)', borderRadius: '50%', width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>♡</span>
-      </div>
 
       {fotos.length > 1 && (
         <>
@@ -64,7 +61,7 @@ export default function LojaPeca() {
         </>
       )}
 
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '18px 20px', background: 'linear-gradient(to top, rgba(0,0,0,0.75), transparent)', color: '#fff', zIndex: 4 }}>
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, paddingTop: 60, paddingBottom: 24, paddingLeft: 20, paddingRight: 20, background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.6) 50%, transparent 100%)', color: '#fff', zIndex: 4 }}>
         <div style={{ fontFamily: 'Georgia, serif', fontSize: 21, marginBottom: 4 }}>{peca.nome}</div>
         <div>
           {peca.percentual_desconto > 0 && <span style={{ textDecoration: 'line-through', opacity: 0.7, fontSize: 13, marginRight: 8 }}>R$ {brl(peca.preco_base)}</span>}

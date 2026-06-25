@@ -32,7 +32,6 @@ export default function Home() {
 
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', background: 'linear-gradient(to bottom, rgba(0,0,0,0.35), transparent)' }}>
         <img src="/logo-nalu-branca.png" alt="Closet Nalu" style={{ height: 38 }} />
-        <span style={{ color: '#fff', fontSize: 22 }}>&#9788;</span>
       </div>
 
       <div style={{ height: '100vh', overflowY: 'scroll', scrollSnapType: 'y mandatory' }}>

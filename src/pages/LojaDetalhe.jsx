@@ -68,8 +68,8 @@ export default function LojaDetalhe() {
       <div style={{ maxWidth: 460, margin: '0 auto', padding: 18 }}>
 
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
-          <div style={{ position: 'relative', width: 240, aspectRatio: '3 / 4', background: '#f3f3f3', borderRadius: 8, overflow: 'hidden', cursor: 'pointer' }} onClick={() => navigate('/peca/' + peca.id)}>
-            {fotos[idx]?.url && <img src={fotos[idx].url} alt={peca.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+          <div style={{ position: 'relative', width: 240, background: '#fff', borderRadius: 8, overflow: 'hidden', cursor: 'pointer' }} onClick={() => navigate('/peca/' + peca.id)}>
+            {fotos[idx]?.url && <img src={fotos[idx].url} alt={peca.nome} style={{ width: '100%', height: 'auto', display: 'block' }} />}
             <span style={{ position: 'absolute', bottom: 8, right: 8, color: '#fff', fontSize: 10, background: 'rgba(0,0,0,0.5)', padding: '3px 8px', borderRadius: 10 }}>toque para ampliar</span>
           </div>
         </div>

@@ -41,7 +41,7 @@ export default function AdminLogin() {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: 'Arial, sans-serif', background: '#fff' }}>
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '30px 28px', maxWidth: 380, margin: '0 auto', width: '100%' }}>
 
-        <div style={{ fontFamily: 'Georgia, serif', fontSize: 30, letterSpacing: 5, color: '#6B1F2A', marginBottom: 6 }}>CLOSET NALU</div>
+        <div style={{ fontFamily: 'Georgia, serif', fontSize: 30, letterSpacing: 5, color: '#AA1B2F', marginBottom: 6 }}>CLOSET NALU</div>
         <div style={{ fontSize: 12, letterSpacing: 2, color: '#aaa', textTransform: 'uppercase', marginBottom: 40 }}>Painel administrativo</div>
 
         <div style={{ width: '100%', marginBottom: 16 }}>
@@ -61,7 +61,7 @@ export default function AdminLogin() {
 
         {erro && <div style={{ width: '100%', background: '#fdecea', color: '#a32d2d', padding: 10, borderRadius: 8, fontSize: 13, marginBottom: 16 }}>{erro}</div>}
 
-        <button onClick={entrar} disabled={carregando} style={{ width: '100%', height: 46, background: '#6B1F2A', color: '#fff', border: 'none', borderRadius: 8, fontSize: 15, letterSpacing: 1, cursor: 'pointer', opacity: carregando ? 0.6 : 1 }}>
+        <button onClick={entrar} disabled={carregando} style={{ width: '100%', height: 46, background: '#AA1B2F', color: '#fff', border: 'none', borderRadius: 8, fontSize: 15, letterSpacing: 1, cursor: 'pointer', opacity: carregando ? 0.6 : 1 }}>
           {carregando ? 'Entrando...' : 'Entrar'}
         </button>
 
@@ -69,7 +69,7 @@ export default function AdminLogin() {
       </div>
 
       <div style={{ padding: 16, textAlign: 'center', borderTop: '0.5px solid #eee' }}>
-        <Link to="/" style={{ fontSize: 12, color: '#6B1F2A', textDecoration: 'none' }}>← Voltar para a loja</Link>
+        <Link to="/" style={{ fontSize: 12, color: '#AA1B2F', textDecoration: 'none' }}>← Voltar para a loja</Link>
       </div>
     </div>
   )

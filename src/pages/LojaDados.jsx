@@ -45,7 +45,7 @@ export default function LojaDados() {
         <label style={{ fontSize: 12, color: '#888', display: 'block', marginBottom: 4 }}>Endereco de entrega</label>
         <textarea value={endereco} onChange={(e) => setEndereco(e.target.value)} placeholder="Rua, numero, bairro, cidade" rows={3} style={{ ...campo, height: 'auto', paddingTop: 10, resize: 'vertical' }} />
 
-        <button onClick={salvar} style={{ width: '100%', height: 46, background: '#6B1F2A', color: '#fff', border: 'none', borderRadius: 8, fontSize: 15, cursor: 'pointer' }}>
+        <button onClick={salvar} style={{ width: '100%', height: 46, background: '#AA1B2F', color: '#fff', border: 'none', borderRadius: 8, fontSize: 15, cursor: 'pointer' }}>
           {salvo ? 'Salvo!' : 'Salvar dados'}
         </button>
         <div style={{ fontSize: 11, color: '#aaa', textAlign: 'center', marginTop: 12 }}>Seus dados ficam salvos apenas neste aparelho.</div>

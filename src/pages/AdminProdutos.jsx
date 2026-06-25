@@ -178,7 +178,7 @@ export default function AdminProdutos() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#fff', fontFamily: 'Arial, sans-serif' }}>
-      <div style={{ background: '#6B1F2A', color: '#fff', padding: '16px 18px', display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ background: '#AA1B2F', color: '#fff', padding: '16px 18px', display: 'flex', alignItems: 'center', gap: 10 }}>
         <span onClick={() => navigate('/admin')} style={{ cursor: 'pointer', fontSize: 20 }}>←</span>
         <span style={{ fontFamily: 'Georgia, serif', fontSize: 18, letterSpacing: 1 }}>Gerenciar produtos</span>
       </div>
@@ -187,7 +187,7 @@ export default function AdminProdutos() {
 
         <div style={{ padding: 18, borderBottom: '8px solid #f4f4f2' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-            <span style={{ fontSize: 13, fontWeight: 500, color: '#6B1F2A' }}>{editandoId ? '✏️ Editar peça' : '+ Nova peça'}</span>
+            <span style={{ fontSize: 13, fontWeight: 500, color: '#AA1B2F' }}>{editandoId ? '✏️ Editar peça' : '+ Nova peça'}</span>
             {editandoId && <span onClick={cancelarEdicao} style={{ fontSize: 12, color: '#999', cursor: 'pointer' }}>cancelar</span>}
           </div>
 
@@ -243,12 +243,12 @@ export default function AdminProdutos() {
             </div>
           </div>
 
-          <div style={{ background: '#f9f3f0', borderRadius: 8, padding: '10px 12px', marginBottom: 12, fontSize: 12, color: '#6B1F2A' }}>
+          <div style={{ background: '#f9f3f0', borderRadius: 8, padding: '10px 12px', marginBottom: 12, fontSize: 12, color: '#AA1B2F' }}>
             Preço final calculado: <b>R$ {brl(precoFinal)}</b>{pct > 0 && <> &nbsp;·&nbsp; selo <b>-{pct}%</b></>}
             {fotos.length > 0 && <div style={{ marginTop: 6, color: '#3B7A5A' }}>✓ {fotos.length} foto(s) pronta(s)</div>}
           </div>
 
-          <button onClick={salvar} disabled={salvando} style={{ width: '100%', height: 40, background: '#6B1F2A', color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, cursor: 'pointer', opacity: salvando ? 0.6 : 1 }}>{salvando ? 'Salvando...' : 'Salvar peça'}</button>
+          <button onClick={salvar} disabled={salvando} style={{ width: '100%', height: 40, background: '#AA1B2F', color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, cursor: 'pointer', opacity: salvando ? 0.6 : 1 }}>{salvando ? 'Salvando...' : 'Salvar peça'}</button>
         </div>
 
         <div style={{ padding: 18 }}>

@@ -31,13 +31,13 @@ export default function Home() {
     <div style={{ height: '100vh', overflow: 'hidden', position: 'relative', fontFamily: 'Georgia, serif', background: '#000' }}>
 
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', background: 'linear-gradient(to bottom, rgba(0,0,0,0.35), transparent)' }}>
-        <span style={{ fontSize: 20, letterSpacing: 3, color: '#fff' }}>CLOSET NALU</span>
+        <img src="/logo-nalu-branca.png" alt="Closet Nalu" style={{ height: 38 }} />
         <span style={{ color: '#fff', fontSize: 22 }}>&#9788;</span>
       </div>
 
       <div style={{ height: '100vh', overflowY: 'scroll', scrollSnapType: 'y mandatory' }}>
 
-        <section style={{ height: '100vh', scrollSnapAlign: 'start', background: '#6B1F2A', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+        <section style={{ height: '100vh', scrollSnapAlign: 'start', background: '#AA1B2F', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
           <div style={{ fontSize: 88, lineHeight: 0.9, letterSpacing: 6 }}>SALE</div>
           <div style={{ width: 60, height: 1, background: '#E8C9A0', margin: '22px 0' }} />
           <div style={{ fontSize: 13, letterSpacing: 3, color: '#E8C9A0' }}>ATÉ</div>
@@ -60,7 +60,7 @@ export default function Home() {
             <section key={p.id} style={{ height: '100vh', scrollSnapAlign: 'start', position: 'relative', background: '#d8c3b0' }}>
               {foto && <img src={foto} alt={p.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
               {p.percentual_desconto > 0 && (
-                <span style={{ position: 'absolute', top: 60, left: 14, background: '#6B1F2A', color: '#fff', fontSize: 12, padding: '3px 10px', borderRadius: 14, fontFamily: 'Arial, sans-serif' }}>-{p.percentual_desconto}%</span>
+                <span style={{ position: 'absolute', top: 60, left: 14, background: '#AA1B2F', color: '#fff', fontSize: 12, padding: '3px 10px', borderRadius: 14, fontFamily: 'Arial, sans-serif' }}>-{p.percentual_desconto}%</span>
               )}
               <span style={{ position: 'absolute', top: 100, right: 18, color: '#fff', fontSize: 26 }}>&#9825;</span>
               <div style={{ position: 'absolute', bottom: 90, left: 0, right: 0, padding: 20, background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)', color: '#fff' }}>
@@ -78,9 +78,9 @@ export default function Home() {
       </div>
 
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 6, display: 'flex', justifyContent: 'space-around', alignItems: 'center', padding: '10px 0 8px', borderTop: '0.5px solid #eee', background: '#fafafa', fontFamily: 'Arial, sans-serif' }}>
-        {[['⌂','Home',true,'/'],['☰','Categorias',false,'/categorias'],['⚲','Pesquisar',false,'/categorias'],['🛍','Sacola',false,'/sacola'],['☺','Perfil',false,'/categorias']].map(([ic, lbl, ativo, rota]) => (
-          <div key={lbl} onClick={() => navigate(rota)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, fontSize: 11, color: ativo ? '#6B1F2A' : '#aaa', cursor: 'pointer', position: 'relative' }}>
-            <span style={{ fontSize: 18, position: 'relative' }}>{ic}{ic === '🛍' && qtdTotal > 0 && <span style={{ position: 'absolute', top: -4, right: -8, background: '#6B1F2A', color: '#fff', fontSize: 9, minWidth: 15, height: 15, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px' }}>{qtdTotal}</span>}</span>{lbl}
+        {[['⌂','Home',true,'/'],['☰','Categorias',false,'/categorias'],['⚲','Coleção',false,'/todas'],['🛍','Sacola',false,'/sacola'],['☺','Perfil',false,'/categorias']].map(([ic, lbl, ativo, rota]) => (
+          <div key={lbl} onClick={() => navigate(rota)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, fontSize: 11, color: ativo ? '#AA1B2F' : '#aaa', cursor: 'pointer', position: 'relative' }}>
+            <span style={{ fontSize: 18, position: 'relative' }}>{ic}{ic === '🛍' && qtdTotal > 0 && <span style={{ position: 'absolute', top: -4, right: -8, background: '#AA1B2F', color: '#fff', fontSize: 9, minWidth: 15, height: 15, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px' }}>{qtdTotal}</span>}</span>{lbl}
           </div>
         ))}
       </div>

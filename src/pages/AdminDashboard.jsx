@@ -30,7 +30,7 @@ export default function AdminDashboard() {
   const nome = email ? email.split('@')[0] : ''
 
   const cards = [
-    { titulo: 'Produtos', sub: `${nProdutos} peças`, icone: '👗', cor: '#6B1F2A', bg: '#f9f3f0', borda: '#ecd9d3', txt: '#6B1F2A', rota: '/admin/produtos' },
+    { titulo: 'Produtos', sub: `${nProdutos} peças`, icone: '👗', cor: '#AA1B2F', bg: '#f9f3f0', borda: '#ecd9d3', txt: '#AA1B2F', rota: '/admin/produtos' },
     { titulo: 'Categorias', sub: `${nCategorias} categorias`, icone: '🗂', cor: '#3B6A9A', bg: '#eef2f6', borda: '#d6dfe8', txt: '#2f5680', rota: '/admin/categorias' },
     { titulo: 'Banner', sub: 'Editar abertura', icone: '🖼', cor: '#8B5A8C', bg: '#f4f0f5', borda: '#e2d6e4', txt: '#7a4a7c', rota: '/admin/banner' },
     { titulo: 'Pedidos', sub: 'Ver vendas', icone: '🛍', cor: '#3B7A5A', bg: '#eef3f0', borda: '#d6e4dc', txt: '#2f6249', rota: '/admin/pedidos' },
@@ -39,7 +39,7 @@ export default function AdminDashboard() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#fff', fontFamily: 'Arial, sans-serif' }}>
-      <div style={{ background: '#6B1F2A', color: '#fff', padding: '20px 18px' }}>
+      <div style={{ background: '#AA1B2F', color: '#fff', padding: '20px 18px' }}>
         <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, letterSpacing: 2 }}>CLOSET NALU</div>
         <div style={{ fontSize: 12, opacity: 0.8, marginTop: 2 }}>Painel administrativo</div>
       </div>
@@ -57,7 +57,7 @@ export default function AdminDashboard() {
           ))}
           <div onClick={() => navigate('/')} style={{ background: '#fafafa', borderRadius: 12, padding: '16px 14px', border: '0.5px solid #eee', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', cursor: 'pointer' }}>
             <div style={{ fontSize: 20, marginBottom: 8 }}>🏬</div>
-            <div style={{ fontSize: 13, color: '#6B1F2A' }}>Ver a loja</div>
+            <div style={{ fontSize: 13, color: '#AA1B2F' }}>Ver a loja</div>
           </div>
         </div>
 

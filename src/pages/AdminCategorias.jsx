@@ -55,17 +55,17 @@ export default function AdminCategorias() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#fff', fontFamily: 'Arial, sans-serif' }}>
-      <div style={{ background: '#6B1F2A', color: '#fff', padding: '16px 18px', display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ background: '#AA1B2F', color: '#fff', padding: '16px 18px', display: 'flex', alignItems: 'center', gap: 10 }}>
         <span onClick={() => navigate('/admin')} style={{ cursor: 'pointer', fontSize: 20 }}>←</span>
         <span style={{ fontFamily: 'Georgia, serif', fontSize: 18, letterSpacing: 1 }}>Categorias</span>
       </div>
 
       <div style={{ maxWidth: 640, margin: '0 auto' }}>
         <div style={{ padding: 18, borderBottom: '8px solid #f4f4f2' }}>
-          <div style={{ fontSize: 13, fontWeight: 500, color: '#6B1F2A', marginBottom: 10 }}>+ Nova categoria</div>
+          <div style={{ fontSize: 13, fontWeight: 500, color: '#AA1B2F', marginBottom: 10 }}>+ Nova categoria</div>
           <div style={{ display: 'flex', gap: 8 }}>
             <input value={nova} onChange={(e) => setNova(e.target.value)} placeholder="Nome (ex: Cinto)" style={{ flex: 1, height: 36, border: '0.5px solid #ddd', borderRadius: 6, padding: '0 10px', fontSize: 13, boxSizing: 'border-box' }} />
-            <button onClick={criar} style={{ height: 36, padding: '0 16px', background: '#6B1F2A', color: '#fff', border: 'none', borderRadius: 6, fontSize: 13, cursor: 'pointer' }}>Criar</button>
+            <button onClick={criar} style={{ height: 36, padding: '0 16px', background: '#AA1B2F', color: '#fff', border: 'none', borderRadius: 6, fontSize: 13, cursor: 'pointer' }}>Criar</button>
           </div>
         </div>
 
@@ -76,7 +76,7 @@ export default function AdminCategorias() {
             <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 0', borderBottom: '0.5px solid #eee' }}>
               {editId === c.id ? (
                 <>
-                  <input value={editNome} onChange={(e) => setEditNome(e.target.value)} style={{ flex: 1, height: 32, border: '0.5px solid #6B1F2A', borderRadius: 6, padding: '0 10px', fontSize: 13, boxSizing: 'border-box' }} />
+                  <input value={editNome} onChange={(e) => setEditNome(e.target.value)} style={{ flex: 1, height: 32, border: '0.5px solid #AA1B2F', borderRadius: 6, padding: '0 10px', fontSize: 13, boxSizing: 'border-box' }} />
                   <span onClick={() => salvarEdicao(c.id)} style={{ cursor: 'pointer', color: '#3B7A5A', fontSize: 13 }}>salvar</span>
                   <span onClick={() => { setEditId(null); setEditNome('') }} style={{ cursor: 'pointer', color: '#999', fontSize: 13 }}>cancelar</span>
                 </>

@@ -8,7 +8,7 @@ export default function AdminBanner() {
   const [chamada, setChamada] = useState('ATÉ 50%')
   const [sub, setSub] = useState('EM PEÇAS SELECIONADAS')
   const [rodape, setRodape] = useState('*Confira o regulamento')
-  const [cor, setCor] = useState('#6B1F2A')
+  const [cor, setCor] = useState('#AA1B2F')
   const [carregando, setCarregando] = useState(true)
   const [salvando, setSalvando] = useState(false)
   const navigate = useNavigate()
@@ -26,7 +26,7 @@ export default function AdminBanner() {
       setChamada(data.chamada || '')
       setSub(data.subtexto || 'EM PEÇAS SELECIONADAS')
       setRodape(data.rodape || '')
-      setCor(data.cor_fundo || '#6B1F2A')
+      setCor(data.cor_fundo || '#AA1B2F')
     }
     setCarregando(false)
   }
@@ -46,11 +46,11 @@ export default function AdminBanner() {
     carregar()
   }
 
-  const cores = ['#6B1F2A', '#1a1a1a', '#2C3E2D', '#7a3b3b', '#4A141C']
+  const cores = ['#AA1B2F', '#1a1a1a', '#2C3E2D', '#7a3b3b', '#4A141C']
 
   return (
     <div style={{ minHeight: '100vh', background: '#fff', fontFamily: 'Arial, sans-serif' }}>
-      <div style={{ background: '#6B1F2A', color: '#fff', padding: '16px 18px', display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ background: '#AA1B2F', color: '#fff', padding: '16px 18px', display: 'flex', alignItems: 'center', gap: 10 }}>
         <span onClick={() => navigate('/admin')} style={{ cursor: 'pointer', fontSize: 20 }}>←</span>
         <span style={{ fontFamily: 'Georgia, serif', fontSize: 18, letterSpacing: 1 }}>Editar banner</span>
       </div>
@@ -81,7 +81,7 @@ export default function AdminBanner() {
               <input value={cor} onChange={(e) => setCor(e.target.value)} style={{ flex: 1, height: 34, border: '0.5px solid #ddd', borderRadius: 8, padding: '0 10px', fontSize: 12, boxSizing: 'border-box' }} />
             </div>
 
-            <button onClick={salvar} disabled={salvando} style={{ width: '100%', height: 42, background: '#6B1F2A', color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, cursor: 'pointer', opacity: salvando ? 0.6 : 1 }}>
+            <button onClick={salvar} disabled={salvando} style={{ width: '100%', height: 42, background: '#AA1B2F', color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, cursor: 'pointer', opacity: salvando ? 0.6 : 1 }}>
               {salvando ? 'Salvando...' : 'Salvar banner'}
             </button>
           </>

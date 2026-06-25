@@ -63,7 +63,7 @@ export default function LojaListagem() {
               <div key={p.id} onClick={() => navigate('/detalhe/' + p.id)} style={{ cursor: 'pointer' }}>
                 <div style={{ position: 'relative' }}>
                   {p.percentual_desconto > 0 && (
-                    <span style={{ position: 'absolute', top: 8, left: 8, background: '#6B1F2A', color: '#fff', fontSize: 11, padding: '2px 8px', borderRadius: 12, zIndex: 2 }}>-{p.percentual_desconto}%</span>
+                    <span style={{ position: 'absolute', top: 8, left: 8, background: '#AA1B2F', color: '#fff', fontSize: 11, padding: '2px 8px', borderRadius: 12, zIndex: 2 }}>-{p.percentual_desconto}%</span>
                   )}
                   <span onClick={(e) => { e.stopPropagation(); alternar(p.id) }} style={{ position: 'absolute', top: 8, right: 8, fontSize: 20, color: ehFavorito(p.id) ? '#e74c3c' : '#fff', zIndex: 2, cursor: 'pointer' }}>{ehFavorito(p.id) ? '♥' : '♡'}</span>
                   <div style={{ aspectRatio: '3 / 4', background: '#f3f3f3', borderRadius: 4, overflow: 'hidden' }}>
@@ -82,9 +82,9 @@ export default function LojaListagem() {
 
       <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', padding: '10px 0 8px', borderTop: '0.5px solid #eee', background: '#fafafa' }}>
         <div onClick={() => navigate('/')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, fontSize: 11, color: '#aaa', cursor: 'pointer' }}><span style={{ fontSize: 18 }}>⌂</span>Home</div>
-        <div onClick={() => navigate('/categorias')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, fontSize: 11, color: '#6B1F2A', cursor: 'pointer' }}><span style={{ fontSize: 18 }}>☰</span>Categorias</div>
+        <div onClick={() => navigate('/categorias')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, fontSize: 11, color: '#AA1B2F', cursor: 'pointer' }}><span style={{ fontSize: 18 }}>☰</span>Categorias</div>
         <div onClick={() => navigate('/pesquisar')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, fontSize: 11, color: '#aaa', cursor: 'pointer' }}><span style={{ width: 40, height: 40, borderRadius: '50%', background: '#f0e6e8', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: -18, fontSize: 18 }}>⚲</span>Pesquisar</div>
-        <div onClick={() => navigate('/sacola')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, fontSize: 11, color: '#aaa', cursor: 'pointer' }}><span style={{ fontSize: 18, position: 'relative' }}>🛍{qtdTotal > 0 && <span style={{ position: 'absolute', top: -4, right: -8, background: '#6B1F2A', color: '#fff', fontSize: 9, minWidth: 15, height: 15, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px' }}>{qtdTotal}</span>}</span>Sacola</div>
+        <div onClick={() => navigate('/sacola')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, fontSize: 11, color: '#aaa', cursor: 'pointer' }}><span style={{ fontSize: 18, position: 'relative' }}>🛍{qtdTotal > 0 && <span style={{ position: 'absolute', top: -4, right: -8, background: '#AA1B2F', color: '#fff', fontSize: 9, minWidth: 15, height: 15, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px' }}>{qtdTotal}</span>}</span>Sacola</div>
         <div onClick={() => navigate('/perfil')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, fontSize: 11, color: '#aaa', cursor: 'pointer' }}><span style={{ fontSize: 18 }}>☺</span>Perfil</div>
       </div>
 

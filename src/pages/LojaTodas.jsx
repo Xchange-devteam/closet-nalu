@@ -28,13 +28,10 @@ export default function LojaTodas() {
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', padding: '14px 0', borderBottom: '0.5px solid #eee' }}>
         <span onClick={() => navigate(-1)} style={{ position: 'absolute', left: 16, fontSize: 20, cursor: 'pointer' }}>←</span>
-        <span style={{ fontFamily: 'Georgia, serif', fontWeight: 500, letterSpacing: 1, fontSize: 16 }}>TODAS AS PEÇAS</span>
+        <span style={{ fontFamily: 'Georgia, serif', fontWeight: 500, letterSpacing: 1, fontSize: 16 }}>COLEÇÃO</span>
       </div>
 
       <div style={{ flex: 1, overflowY: 'auto', maxWidth: 720, margin: '0 auto', width: '100%' }}>
-        <div style={{ padding: '10px 14px', fontWeight: 500, fontSize: 13 }}>
-          {carregando ? 'Carregando...' : `${pecas.length} ${pecas.length === 1 ? 'peça' : 'peças'}`}
-        </div>
 
         {!carregando && pecas.length === 0 && (
           <div style={{ textAlign: 'center', color: '#999', padding: 40, fontFamily: 'Georgia, serif' }}>Nenhuma peça cadastrada ainda.</div>
@@ -48,7 +45,7 @@ export default function LojaTodas() {
               <div key={p.id} onClick={() => navigate('/detalhe/' + p.id)} style={{ cursor: 'pointer' }}>
                 <div style={{ position: 'relative' }}>
                   {p.percentual_desconto > 0 && (
-                    <span style={{ position: 'absolute', top: 8, left: 8, background: '#6B1F2A', color: '#fff', fontSize: 11, padding: '2px 8px', borderRadius: 12, zIndex: 2 }}>-{p.percentual_desconto}%</span>
+                    <span style={{ position: 'absolute', top: 8, left: 8, background: '#AA1B2F', color: '#fff', fontSize: 11, padding: '2px 8px', borderRadius: 12, zIndex: 2 }}>-{p.percentual_desconto}%</span>
                   )}
                   <span style={{ position: 'absolute', top: 8, right: 8, fontSize: 20, color: '#fff', zIndex: 2 }}>♡</span>
                   <div style={{ aspectRatio: '3 / 4', background: '#f3f3f3', borderRadius: 4, overflow: 'hidden' }}>
@@ -69,7 +66,7 @@ export default function LojaTodas() {
         <div onClick={() => navigate('/')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, fontSize: 11, color: '#aaa', cursor: 'pointer' }}><span style={{ fontSize: 18 }}>⌂</span>Home</div>
         <div onClick={() => navigate('/categorias')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, fontSize: 11, color: '#aaa', cursor: 'pointer' }}><span style={{ fontSize: 18 }}>☰</span>Categorias</div>
         <div onClick={() => navigate('/pesquisar')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, fontSize: 11, color: '#aaa', cursor: 'pointer' }}><span style={{ width: 40, height: 40, borderRadius: '50%', background: '#f0e6e8', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: -18, fontSize: 18 }}>⚲</span>Pesquisar</div>
-        <div onClick={() => navigate('/sacola')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, fontSize: 11, color: '#aaa', cursor: 'pointer' }}><span style={{ fontSize: 18, position: 'relative' }}>🛍{qtdTotal > 0 && <span style={{ position: 'absolute', top: -4, right: -8, background: '#6B1F2A', color: '#fff', fontSize: 9, minWidth: 15, height: 15, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px' }}>{qtdTotal}</span>}</span>Sacola</div>
+        <div onClick={() => navigate('/sacola')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, fontSize: 11, color: '#aaa', cursor: 'pointer' }}><span style={{ fontSize: 18, position: 'relative' }}>🛍{qtdTotal > 0 && <span style={{ position: 'absolute', top: -4, right: -8, background: '#AA1B2F', color: '#fff', fontSize: 9, minWidth: 15, height: 15, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px' }}>{qtdTotal}</span>}</span>Sacola</div>
         <div onClick={() => navigate('/perfil')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, fontSize: 11, color: '#aaa', cursor: 'pointer' }}><span style={{ fontSize: 18 }}>☺</span>Perfil</div>
       </div>
 

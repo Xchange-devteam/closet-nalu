@@ -70,8 +70,8 @@ export default function LojaPesquisar() {
 
 function BarraInferior({ navigate, qtdTotal }) {
   const item = (icone, label, rota, ativo, badge) => (
-    <div onClick={() => rota && navigate(rota)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, fontSize: 11, color: ativo ? '#6B1F2A' : '#aaa', cursor: 'pointer' }}>
-      <span style={{ fontSize: 18, position: 'relative' }}>{icone}{badge > 0 && <span style={{ position: 'absolute', top: -4, right: -8, background: '#6B1F2A', color: '#fff', fontSize: 9, minWidth: 15, height: 15, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px' }}>{badge}</span>}</span>
+    <div onClick={() => rota && navigate(rota)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, fontSize: 11, color: ativo ? '#AA1B2F' : '#aaa', cursor: 'pointer' }}>
+      <span style={{ fontSize: 18, position: 'relative' }}>{icone}{badge > 0 && <span style={{ position: 'absolute', top: -4, right: -8, background: '#AA1B2F', color: '#fff', fontSize: 9, minWidth: 15, height: 15, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px' }}>{badge}</span>}</span>
       {label}
     </div>
   )

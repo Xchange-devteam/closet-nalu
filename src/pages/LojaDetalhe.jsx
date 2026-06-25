@@ -77,7 +77,7 @@ export default function LojaDetalhe() {
         {fotos.length > 1 && (
           <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 18 }}>
             {fotos.map((f, k) => (
-              <div key={k} onClick={() => setIdx(k)} style={{ width: 44, height: 58, borderRadius: 5, overflow: 'hidden', border: k === idx ? '1.5px solid #6B1F2A' : '0.5px solid #ddd', cursor: 'pointer' }}>
+              <div key={k} onClick={() => setIdx(k)} style={{ width: 44, height: 58, borderRadius: 5, overflow: 'hidden', border: k === idx ? '1.5px solid #AA1B2F' : '0.5px solid #ddd', cursor: 'pointer' }}>
                 <img src={f.url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
             ))}
@@ -88,8 +88,8 @@ export default function LojaDetalhe() {
 
         <div style={{ marginBottom: 4 }}>
           {peca.percentual_desconto > 0 && <span style={{ textDecoration: 'line-through', color: '#aaa', fontSize: 14 }}>R$ {brl(peca.preco_base)}</span>}
-          <span style={{ fontSize: 22, fontWeight: 500, color: '#6B1F2A', marginLeft: peca.percentual_desconto > 0 ? 8 : 0 }}>R$ {brl(peca.preco_promocional)}</span>
-          {peca.percentual_desconto > 0 && <span style={{ background: '#6B1F2A', color: '#fff', fontSize: 11, padding: '2px 8px', borderRadius: 12, marginLeft: 8 }}>-{peca.percentual_desconto}%</span>}
+          <span style={{ fontSize: 22, fontWeight: 500, color: '#AA1B2F', marginLeft: peca.percentual_desconto > 0 ? 8 : 0 }}>R$ {brl(peca.preco_promocional)}</span>
+          {peca.percentual_desconto > 0 && <span style={{ background: '#AA1B2F', color: '#fff', fontSize: 11, padding: '2px 8px', borderRadius: 12, marginLeft: 8 }}>-{peca.percentual_desconto}%</span>}
         </div>
         <div style={{ fontSize: 12, color: '#888', marginBottom: 18 }}>{peca.parcelas}x de R$ {brl(valorParcela)} sem juros</div>
 
@@ -105,13 +105,13 @@ export default function LojaDetalhe() {
             <div style={{ fontSize: 13, fontWeight: 500, color: '#333', marginBottom: 8 }}>Tamanho</div>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               {peca.tamanhos.map((t) => (
-                <span key={t} onClick={() => setTamanho(t)} style={{ minWidth: 44, height: 44, padding: '0 8px', border: tamanho === t ? '1.5px solid #6B1F2A' : '0.5px solid #ccc', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: tamanho === t ? '#6B1F2A' : '#333', fontWeight: tamanho === t ? 500 : 400, cursor: 'pointer' }}>{t}</span>
+                <span key={t} onClick={() => setTamanho(t)} style={{ minWidth: 44, height: 44, padding: '0 8px', border: tamanho === t ? '1.5px solid #AA1B2F' : '0.5px solid #ccc', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: tamanho === t ? '#AA1B2F' : '#333', fontWeight: tamanho === t ? 500 : 400, cursor: 'pointer' }}>{t}</span>
               ))}
             </div>
           </div>
         )}
 
-        <button onClick={adicionarSacola} disabled={!podeComprar} style={{ width: '100%', height: 48, background: podeComprar ? '#6B1F2A' : '#ccc', color: '#fff', border: 'none', borderRadius: 8, fontSize: 15, letterSpacing: 1, marginBottom: 10, cursor: podeComprar ? 'pointer' : 'not-allowed' }}>
+        <button onClick={adicionarSacola} disabled={!podeComprar} style={{ width: '100%', height: 48, background: podeComprar ? '#AA1B2F' : '#ccc', color: '#fff', border: 'none', borderRadius: 8, fontSize: 15, letterSpacing: 1, marginBottom: 10, cursor: podeComprar ? 'pointer' : 'not-allowed' }}>
           {temTamanho && !tamanho ? 'Escolha um tamanho' : (adicionado ? '✓ Adicionado!' : 'Adicionar à sacola')}
         </button>
         <button onClick={comprarWhats} style={{ width: '100%', height: 46, background: '#fff', color: '#25D366', border: '1px solid #25D366', borderRadius: 8, fontSize: 14, cursor: 'pointer' }}>

@@ -18,7 +18,7 @@ export default function LojaSacola() {
       {itens.length === 0 ? (
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: 30 }}>
           <div style={{ fontFamily: 'Georgia, serif', fontSize: 18, color: '#888' }}>Sua sacola está vazia</div>
-          <button onClick={() => navigate('/todas')} style={{ padding: '12px 24px', background: '#6B1F2A', color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, cursor: 'pointer' }}>Ver a coleção</button>
+          <button onClick={() => navigate('/todas')} style={{ padding: '12px 24px', background: '#AA1B2F', color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, cursor: 'pointer' }}>Ver a coleção</button>
         </div>
       ) : (
         <>
@@ -31,7 +31,7 @@ export default function LojaSacola() {
                 <div style={{ flex: 1 }}>
                   <div style={{ fontFamily: 'Georgia, serif', fontSize: 14 }}>{i.nome}</div>
                   {i.tamanho && <div style={{ fontSize: 11, color: '#999', margin: '2px 0' }}>Tamanho: {i.tamanho}</div>}
-                  <div style={{ fontSize: 14, fontWeight: 500, color: '#6B1F2A' }}>R$ {brl(i.preco)}</div>
+                  <div style={{ fontSize: 14, fontWeight: 500, color: '#AA1B2F' }}>R$ {brl(i.preco)}</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 8 }}>
                     <span onClick={() => mudarQtd(i.chave, -1)} style={{ width: 26, height: 26, border: '0.5px solid #ccc', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>−</span>
                     <span style={{ fontSize: 14, minWidth: 16, textAlign: 'center' }}>{i.quantidade}</span>
@@ -50,9 +50,9 @@ export default function LojaSacola() {
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14, fontSize: 16, fontWeight: 500, color: '#222' }}>
               <span>Total</span>
-              <span style={{ color: '#6B1F2A' }}>R$ {brl(total)}</span>
+              <span style={{ color: '#AA1B2F' }}>R$ {brl(total)}</span>
             </div>
-            <button onClick={() => alert('Checkout Asaas em breve!')} style={{ width: '100%', height: 48, background: '#6B1F2A', color: '#fff', border: 'none', borderRadius: 8, fontSize: 15, letterSpacing: 1, cursor: 'pointer' }}>Finalizar pedido</button>
+            <button onClick={() => alert('Checkout Asaas em breve!')} style={{ width: '100%', height: 48, background: '#AA1B2F', color: '#fff', border: 'none', borderRadius: 8, fontSize: 15, letterSpacing: 1, cursor: 'pointer' }}>Finalizar pedido</button>
           </div>
         </>
       )}

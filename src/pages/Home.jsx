@@ -37,12 +37,16 @@ export default function Home() {
 
       <div style={{ height: '100vh', overflowY: 'scroll', scrollSnapType: 'y mandatory' }}>
 
-        <section style={{ height: '100vh', scrollSnapAlign: 'start', background: '#AA1B2F', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
-          <div style={{ fontSize: 88, lineHeight: 0.9, letterSpacing: 6 }}>SALE</div>
-          <div style={{ width: 60, height: 1, background: '#E8C9A0', margin: '22px 0' }} />
-          <div style={{ fontSize: 13, letterSpacing: 3, color: '#E8C9A0' }}>ATÉ</div>
-          <div style={{ fontSize: 62, lineHeight: 1 }}>50<span style={{ fontSize: 24 }}>%</span></div>
-          <div style={{ fontSize: 11, letterSpacing: 2, color: '#E8C9A0', marginTop: 8, fontFamily: 'Arial, sans-serif' }}>EM PEÇAS SELECIONADAS</div>
+        <section style={{ height: '100vh', scrollSnapAlign: 'start', background: '#AA1B2F', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', overflow: 'hidden', position: 'relative' }}>
+          <style>{`
+            @keyframes slideFromLeft { 0% { transform: translateX(-120%); opacity: 0; } 60% { opacity: 1; } 100% { transform: translateX(0); opacity: 1; } }
+            @keyframes slideFromRight { 0% { transform: translateX(120%); opacity: 0; } 60% { opacity: 1; } 100% { transform: translateX(0); opacity: 1; } }
+            .cn-closet { animation: slideFromLeft 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+            .cn-nalu { animation: slideFromRight 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards; opacity: 0; }
+          `}</style>
+          <div className="cn-closet" style={{ fontSize: 64, lineHeight: 1, letterSpacing: 10, fontFamily: 'Georgia, serif' }}>CLOSET</div>
+          <div style={{ width: 60, height: 1, background: '#E8C9A0', margin: '20px 0' }} />
+          <div className="cn-nalu" style={{ fontSize: 64, lineHeight: 1, letterSpacing: 10, fontFamily: 'Georgia, serif' }}>NALU</div>
           <div style={{ position: 'absolute', bottom: 100, color: '#E8C9A0', fontSize: 13, fontFamily: 'Arial, sans-serif' }}>deslize para ver a coleção ↑</div>
         </section>
 

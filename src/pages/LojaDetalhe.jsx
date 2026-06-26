@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useSacola } from '../lib/sacola'
 import { useFavoritos } from '../lib/favoritos'
+import Cabecalho from '../components/Cabecalho'
 import BarraNav from '../components/BarraNav'
 
 const WHATSAPP = '5522997718930'
@@ -60,9 +61,10 @@ export default function LojaDetalhe() {
     <>
     <div style={{ minHeight: '100vh', background: '#fff', fontFamily: 'Arial, sans-serif', paddingBottom: 90 }}>
 
-      <div style={{ display: 'flex', alignItems: 'center', position: 'relative', padding: '14px 0', borderBottom: '0.5px solid #eee' }}>        <span style={{ margin: '0 auto', fontFamily: 'Georgia, serif', fontWeight: 500, fontSize: 16 }}>{peca.nome}</span>
-        <span onClick={() => alternar(peca.id)} style={{ position: 'absolute', right: 50, fontSize: 20, cursor: 'pointer', color: ehFavorito(peca.id) ? '#e74c3c' : '#333' }}>{ehFavorito(peca.id) ? '♥' : '♡'}</span>
-        <span onClick={() => navigate('/sacola')} style={{ position: 'absolute', right: 16, fontSize: 20, cursor: 'pointer' }}>🛍</span>
+      <div style={{ position: 'relative' }}>
+        <Cabecalho tela={peca.nome} />
+        <span onClick={() => alternar(peca.id)} style={{ position: 'absolute', top: 20, right: 50, fontSize: 20, cursor: 'pointer', color: ehFavorito(peca.id) ? '#e74c3c' : '#333' }}>{ehFavorito(peca.id) ? '♥' : '♡'}</span>
+        <span onClick={() => navigate('/sacola')} style={{ position: 'absolute', top: 20, right: 16, fontSize: 20, cursor: 'pointer' }}>🛍</span>
       </div>
 
       <div style={{ maxWidth: 460, margin: '0 auto', padding: 18 }}>

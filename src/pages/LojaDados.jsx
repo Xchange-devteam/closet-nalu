@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BarraNav from '../components/BarraNav'
+import Cabecalho from '../components/Cabecalho'
 
 const CHAVE = 'closet_nalu_dados'
 
@@ -32,8 +33,7 @@ export default function LojaDados() {
   return (
     <>
     <div style={{ minHeight: '100vh', background: '#fff', fontFamily: 'Arial, sans-serif', paddingBottom: 70 }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', padding: '14px 0', borderBottom: '0.5px solid #eee' }}>        <span style={{ fontFamily: 'Georgia, serif', fontWeight: 500, letterSpacing: 1, fontSize: 16 }}>MEUS DADOS</span>
-      </div>
+      <Cabecalho tela="Meus dados" />
 
       <div style={{ maxWidth: 460, margin: '0 auto', padding: 20 }}>
         <label style={{ fontSize: 12, color: '#888', display: 'block', marginBottom: 4 }}>Nome completo</label>

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useSacola } from '../lib/sacola'
 import BarraNav from '../components/BarraNav'
+import Cabecalho from '../components/Cabecalho'
 
 export default function LojaSacola() {
   const { itens, mudarQtd, remover, total, qtdTotal } = useSacola()
@@ -12,8 +13,7 @@ export default function LojaSacola() {
     <>
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#fff', fontFamily: 'Arial, sans-serif', paddingBottom: 90 }}>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', padding: '14px 0', borderBottom: '0.5px solid #eee' }}>        <span style={{ fontFamily: 'Georgia, serif', fontWeight: 500, letterSpacing: 1, fontSize: 16 }}>MINHA SACOLA</span>
-      </div>
+      <Cabecalho tela="Sacola" />
 
       {itens.length === 0 ? (
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: 30 }}>

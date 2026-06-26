@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useFavoritos } from '../lib/favoritos'
 import { useSacola } from '../lib/sacola'
 import BarraNav from '../components/BarraNav'
+import Cabecalho from '../components/Cabecalho'
 
 export default function LojaListagem() {
   const { slug } = useParams()
@@ -42,10 +43,7 @@ export default function LojaListagem() {
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#fff', fontFamily: 'Arial, sans-serif' }}>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', padding: '14px 0', borderBottom: '0.5px solid #eee' }}>
-        <span onClick={() => navigate('/categorias')} style={{ position: 'absolute', left: 16, fontSize: 20, cursor: 'pointer' }}>←</span>
-        <span style={{ fontFamily: 'Georgia, serif', fontWeight: 500, letterSpacing: 1, fontSize: 16 }}>{nomeCat || 'Categoria'}</span>
-      </div>
+      <Cabecalho tela={nomeCat || "Categoria"} />
 
       <div style={{ flex: 1, overflowY: 'auto', maxWidth: 720, margin: '0 auto', width: '100%' }}>
         <div style={{ padding: '10px 14px', fontWeight: 500, fontSize: 13 }}>

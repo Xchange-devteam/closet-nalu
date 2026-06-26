@@ -12,6 +12,17 @@ export default function Home() {
   const [carregando, setCarregando] = useState(true)
 
   useEffect(() => {
+    async function checarLogin() {
+      const { data } = await supabase.auth.getSession()
+      const pulou = localStorage.getItem('closet_nalu_login_pulado')
+      if (!data?.session && !pulou) {
+        navigate('/entrar', { replace: true })
+      }
+    }
+    checarLogin()
+  }, [])
+
+  useEffect(() => {
     async function buscar() {
       const { data, error } = await supabase
         .from('produtos')

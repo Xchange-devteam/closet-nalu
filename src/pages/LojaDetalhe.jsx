@@ -60,9 +60,7 @@ export default function LojaDetalhe() {
     <>
     <div style={{ minHeight: '100vh', background: '#fff', fontFamily: 'Arial, sans-serif', paddingBottom: 90 }}>
 
-      <div style={{ display: 'flex', alignItems: 'center', position: 'relative', padding: '14px 0', borderBottom: '0.5px solid #eee' }}>
-        <span onClick={() => navigate(-1)} style={{ position: 'absolute', left: 16, fontSize: 20, cursor: 'pointer' }}>←</span>
-        <span style={{ margin: '0 auto', fontFamily: 'Georgia, serif', fontWeight: 500, fontSize: 16 }}>{peca.nome}</span>
+      <div style={{ display: 'flex', alignItems: 'center', position: 'relative', padding: '14px 0', borderBottom: '0.5px solid #eee' }}>        <span style={{ margin: '0 auto', fontFamily: 'Georgia, serif', fontWeight: 500, fontSize: 16 }}>{peca.nome}</span>
         <span onClick={() => alternar(peca.id)} style={{ position: 'absolute', right: 50, fontSize: 20, cursor: 'pointer', color: ehFavorito(peca.id) ? '#e74c3c' : '#333' }}>{ehFavorito(peca.id) ? '♥' : '♡'}</span>
         <span onClick={() => navigate('/sacola')} style={{ position: 'absolute', right: 16, fontSize: 20, cursor: 'pointer' }}>🛍</span>
       </div>

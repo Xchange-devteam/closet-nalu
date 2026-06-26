@@ -76,13 +76,13 @@ export default function LojaEntrar() {
           Entrar com Google
         </button>
 
-        <div style={{ fontSize: 13, color: '#666', marginTop: 24, textAlign: 'center' }}>
+        <div style={{ fontSize: 13, color: '#666', marginTop: 22, marginBottom: 18, textAlign: 'center' }}>
           Nao tem conta? <Link to="/cadastrar" style={{ color: '#AA1B2F', textDecoration: 'none', fontWeight: 500 }}>Criar conta</Link>
         </div>
-      </div>
 
-      <div style={{ padding: 20, textAlign: 'center', borderTop: '0.5px solid #eee' }}>
-        <span onClick={pular} style={{ fontSize: 13, color: '#999', textDecoration: 'none', cursor: 'pointer' }}>Continuar sem login &rarr;</span>
+        <button onClick={pular} style={{ width: '100%', height: 44, background: 'transparent', color: '#777', border: '1px solid #ddd', borderRadius: 8, fontSize: 14, cursor: 'pointer' }}>
+          Continuar sem login &rarr;
+        </button>
       </div>
     </div>
   )

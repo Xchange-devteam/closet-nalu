@@ -37,7 +37,7 @@ export default function Home() {
 
       <div style={{ height: '100vh', overflowY: 'scroll', scrollSnapType: 'y mandatory' }}>
 
-        <section style={{ height: '100vh', scrollSnapAlign: 'start', background: '#AA1B2F', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', overflow: 'hidden', position: 'relative' }}>
+        <section style={{ height: '100vh', scrollSnapAlign: 'start', background: '#AA1B2F', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', overflow: 'hidden', position: 'relative', paddingBottom: 120 }}>
           <style>{`
             @keyframes slideFromLeft { 0% { transform: translateX(-120%); opacity: 0; } 60% { opacity: 1; } 100% { transform: translateX(0); opacity: 1; } }
             @keyframes slideFromRight { 0% { transform: translateX(120%); opacity: 0; } 60% { opacity: 1; } 100% { transform: translateX(0); opacity: 1; } }

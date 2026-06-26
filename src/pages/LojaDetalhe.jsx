@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useSacola } from '../lib/sacola'
 import { useFavoritos } from '../lib/favoritos'
+import BarraNav from '../components/BarraNav'
 
 const WHATSAPP = '5522997718930'
 
@@ -56,7 +57,8 @@ export default function LojaDetalhe() {
   const valorParcela = peca.parcelas > 0 ? peca.preco_promocional / peca.parcelas : peca.preco_promocional
 
   return (
-    <div style={{ minHeight: '100vh', background: '#fff', fontFamily: 'Arial, sans-serif' }}>
+    <>
+    <div style={{ minHeight: '100vh', background: '#fff', fontFamily: 'Arial, sans-serif', paddingBottom: 90 }}>
 
       <div style={{ display: 'flex', alignItems: 'center', position: 'relative', padding: '14px 0', borderBottom: '0.5px solid #eee' }}>
         <span onClick={() => navigate(-1)} style={{ position: 'absolute', left: 16, fontSize: 20, cursor: 'pointer' }}>←</span>
@@ -120,5 +122,7 @@ export default function LojaDetalhe() {
 
       </div>
     </div>
+      <BarraNav />
+    </>
   )
 }

@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useSacola } from '../lib/sacola'
+import BarraNav from '../components/BarraNav'
 
 export default function LojaSacola() {
   const { itens, mudarQtd, remover, total, qtdTotal } = useSacola()
@@ -8,7 +9,8 @@ export default function LojaSacola() {
   const brl = (v) => Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#fff', fontFamily: 'Arial, sans-serif' }}>
+    <>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#fff', fontFamily: 'Arial, sans-serif', paddingBottom: 90 }}>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', padding: '14px 0', borderBottom: '0.5px solid #eee' }}>
         <span onClick={() => navigate(-1)} style={{ position: 'absolute', left: 16, fontSize: 20, cursor: 'pointer' }}>←</span>
@@ -57,5 +59,7 @@ export default function LojaSacola() {
         </>
       )}
     </div>
+      <BarraNav />
+    </>
   )
 }

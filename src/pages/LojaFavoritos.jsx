@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useFavoritos } from '../lib/favoritos'
+import BarraNav from '../components/BarraNav'
 
 export default function LojaFavoritos() {
   const { favoritos, alternar } = useFavoritos()
@@ -24,7 +25,8 @@ export default function LojaFavoritos() {
   const brl = (v) => Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#fff', fontFamily: 'Arial, sans-serif' }}>
+    <>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#fff', fontFamily: 'Arial, sans-serif', paddingBottom: 70 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', padding: '14px 0', borderBottom: '0.5px solid #eee' }}>
         <span onClick={() => navigate(-1)} style={{ position: 'absolute', left: 16, fontSize: 20, cursor: 'pointer' }}>&#8592;</span>
         <span style={{ fontFamily: 'Georgia, serif', fontWeight: 500, letterSpacing: 1, fontSize: 16 }}>MEUS FAVORITOS</span>
@@ -60,5 +62,7 @@ export default function LojaFavoritos() {
         </div>
       </div>
     </div>
+      <BarraNav />
+    </>
   )
 }

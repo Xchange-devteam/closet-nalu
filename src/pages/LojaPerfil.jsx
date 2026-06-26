@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useFavoritos } from '../lib/favoritos'
 import { useSacola } from '../lib/sacola'
+import BarraNav from '../components/BarraNav'
 
 const WHATSAPP = '5522997718930'
 
@@ -38,25 +39,7 @@ export default function LojaPerfil() {
         <Secao icone={'☎'} cor="#25D366" titulo="Falar com a loja" sub="Tirar duvidas no WhatsApp" onClick={falarLoja} />
       </div>
 
-      <BarraInferior navigate={navigate} qtdTotal={qtdTotal} />
-    </div>
-  )
-}
-
-function BarraInferior({ navigate, qtdTotal }) {
-  const item = (icone, label, rota, ativo, badge) => (
-    <div onClick={() => rota && navigate(rota)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, fontSize: 11, color: ativo ? '#AA1B2F' : '#aaa', cursor: 'pointer' }}>
-      <span style={{ fontSize: 18, position: 'relative' }}>{icone}{badge > 0 && <span style={{ position: 'absolute', top: -4, right: -8, background: '#AA1B2F', color: '#fff', fontSize: 9, minWidth: 15, height: 15, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px' }}>{badge}</span>}</span>
-      {label}
-    </div>
-  )
-  return (
-    <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', padding: '10px 0 8px', borderTop: '0.5px solid #eee', background: '#fafafa' }}>
-      {item('\u2302', 'Home', '/', false, 0)}
-      {item('\u2630', 'Categorias', '/categorias', false, 0)}
-      {item('\u26B2', 'Coleção', '/todas', false, 0)}
-      {item('🛍', 'Sacola', '/sacola', false, qtdTotal)}
-      {item('\u263A', 'Perfil', null, true, 0)}
+      <BarraNav />
     </div>
   )
 }

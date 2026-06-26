@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import BarraNav from '../components/BarraNav'
 
 const CHAVE = 'closet_nalu_dados'
 
@@ -29,7 +30,8 @@ export default function LojaDados() {
   const campo = { width: '100%', height: 40, border: '0.5px solid #ddd', borderRadius: 8, padding: '0 12px', fontSize: 14, marginBottom: 14, boxSizing: 'border-box' }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#fff', fontFamily: 'Arial, sans-serif' }}>
+    <>
+    <div style={{ minHeight: '100vh', background: '#fff', fontFamily: 'Arial, sans-serif', paddingBottom: 70 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', padding: '14px 0', borderBottom: '0.5px solid #eee' }}>
         <span onClick={() => navigate(-1)} style={{ position: 'absolute', left: 16, fontSize: 20, cursor: 'pointer' }}>&#8592;</span>
         <span style={{ fontFamily: 'Georgia, serif', fontWeight: 500, letterSpacing: 1, fontSize: 16 }}>MEUS DADOS</span>
@@ -51,5 +53,7 @@ export default function LojaDados() {
         <div style={{ fontSize: 11, color: '#aaa', textAlign: 'center', marginTop: 12 }}>Seus dados ficam salvos apenas neste aparelho.</div>
       </div>
     </div>
+      <BarraNav />
+    </>
   )
 }

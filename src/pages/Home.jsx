@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSacola } from '../lib/sacola'
 import { supabase } from '../lib/supabase'
+import BarraNav from '../components/BarraNav'
 
 export default function Home() {
   const navigate = useNavigate()
@@ -76,13 +77,7 @@ export default function Home() {
 
       </div>
 
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 6, display: 'flex', justifyContent: 'space-around', alignItems: 'center', padding: '10px 0 8px', borderTop: '0.5px solid #eee', background: '#fafafa', fontFamily: 'Arial, sans-serif' }}>
-        {[['⌂','Home',true,'/'],['☰','Categorias',false,'/categorias'],['⚲','Coleção',false,'/todas'],['🛍','Sacola',false,'/sacola'],['☺','Perfil',false,'/categorias']].map(([ic, lbl, ativo, rota]) => (
-          <div key={lbl} onClick={() => navigate(rota)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, fontSize: 11, color: ativo ? '#AA1B2F' : '#aaa', cursor: 'pointer', position: 'relative' }}>
-            <span style={{ fontSize: 18, position: 'relative' }}>{ic}{ic === '🛍' && qtdTotal > 0 && <span style={{ position: 'absolute', top: -4, right: -8, background: '#AA1B2F', color: '#fff', fontSize: 9, minWidth: 15, height: 15, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px' }}>{qtdTotal}</span>}</span>{lbl}
-          </div>
-        ))}
-      </div>
+      <BarraNav />
 
     </div>
   )

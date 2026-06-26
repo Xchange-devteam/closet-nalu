@@ -7,6 +7,7 @@ import AdminDashboard from './pages/AdminDashboard'
 import AdminProdutos from './pages/AdminProdutos'
 import AdminCategorias from './pages/AdminCategorias'
 import AdminBanner from './pages/AdminBanner'
+import AdminPedidos from './pages/AdminPedidos'
 import LojaCategorias from './pages/LojaCategorias'
 import LojaListagem from './pages/LojaListagem'
 import LojaPeca from './pages/LojaPeca'
@@ -44,6 +45,7 @@ export default function App() {
         <Route path="/admin/produtos" element={<AdminProdutos />} />
         <Route path="/admin/categorias" element={<AdminCategorias />} />
         <Route path="/admin/banner" element={<AdminBanner />} />
+        <Route path="/admin/pedidos" element={<AdminPedidos />} />
       </Routes>
     </BrowserRouter>
     </FavoritosProvider>

@@ -77,6 +77,19 @@ export default function AdminProdutos() {
   const [salvando, setSalvando] = useState(false)
   const [editandoId, setEditandoId] = useState(null)
 
+  function arrTamanhos() {
+    return tamanhos.split(',').map(t => t.trim()).filter(Boolean)
+  }
+
+  function toggleTamanho(t) {
+    const arr = arrTamanhos()
+    if (arr.includes(t)) {
+      setTamanhos(arr.filter(x => x !== t).join(', '))
+    } else {
+      setTamanhos([...arr, t].join(', '))
+    }
+  }
+
   async function salvar() {
     if (!nome || !precoBase || !subId) {
       alert('Preencha nome, categoria e preço base.')
@@ -234,12 +247,14 @@ export default function AdminProdutos() {
           </div>
 
           <div style={{ marginBottom: 12 }}>
-            <label style={{ fontSize: 11, color: '#888' }}>Tamanhos (separados por vírgula — deixe vazio se não tiver)</label>
-            <input value={tamanhos} onChange={(e) => setTamanhos(e.target.value)} placeholder="ex: P, M, G" style={{ width: '100%', height: 36, border: '0.5px solid #ddd', borderRadius: 6, padding: '0 10px', fontSize: 13, boxSizing: 'border-box', marginTop: 2 }} />
-            <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
-              <button type="button" onClick={() => setTamanhos('P, M, G')} style={{ fontSize: 11, padding: '4px 10px', border: '0.5px solid #ccc', borderRadius: 14, background: '#fff', cursor: 'pointer' }}>P, M, G</button>
-              <button type="button" onClick={() => setTamanhos('36, 38, 40, 42')} style={{ fontSize: 11, padding: '4px 10px', border: '0.5px solid #ccc', borderRadius: 14, background: '#fff', cursor: 'pointer' }}>36 a 42</button>
-              <button type="button" onClick={() => setTamanhos('')} style={{ fontSize: 11, padding: '4px 10px', border: '0.5px solid #ccc', borderRadius: 14, background: '#fff', cursor: 'pointer' }}>limpar</button>
+            <label style={{ fontSize: 11, color: '#888' }}>Tamanhos (toque para selecionar)</label>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 6 }}>
+              {['PP','P','M','G','GG','U','36','38','40','42','44'].map((t) => {
+                const ativo = arrTamanhos().includes(t)
+                return (
+                  <button key={t} type="button" onClick={() => toggleTamanho(t)} style={{ fontSize: 12, minWidth: 38, padding: '6px 10px', border: '0.5px solid ' + (ativo ? '#AA1B2F' : '#ccc'), borderRadius: 8, background: ativo ? '#AA1B2F' : '#fff', color: ativo ? '#fff' : '#666', cursor: 'pointer', fontWeight: ativo ? 600 : 400 }}>{t}</button>
+                )
+              })}
             </div>
           </div>
 

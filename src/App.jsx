@@ -17,6 +17,7 @@ import LojaPesquisar from './pages/LojaPesquisar'
 import LojaPerfil from './pages/LojaPerfil'
 import LojaFavoritos from './pages/LojaFavoritos'
 import LojaDados from './pages/LojaDados'
+import LojaEntrar from './pages/LojaEntrar'
 
 export default function App() {
   return (
@@ -34,6 +35,7 @@ export default function App() {
         <Route path="/pesquisar" element={<LojaPesquisar />} />
         <Route path="/perfil" element={<LojaPerfil />} />
         <Route path="/favoritos" element={<LojaFavoritos />} />
+        <Route path="/entrar" element={<LojaEntrar />} />
         <Route path="/perfil/dados" element={<LojaDados />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin" element={<AdminDashboard />} />

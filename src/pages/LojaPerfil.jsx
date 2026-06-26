@@ -22,14 +22,18 @@ export default function LojaPerfil() {
   const { favoritos } = useFavoritos()
   const { qtdTotal } = useSacola()
   const [ehAdmin, setEhAdmin] = useState(false)
+  const [logado, setLogado] = useState(false)
+  const [nomeUsuario, setNomeUsuario] = useState('')
 
-  useEffect(() => { checarAdmin() }, [])
+  useEffect(() => { checarUsuario() }, [])
 
-  async function checarAdmin() {
+  async function checarUsuario() {
     const { data } = await supabase.auth.getUser()
-    if (!data?.user) { setEhAdmin(false); return }
-    const { data: perfil } = await supabase.from('profiles').select('role').eq('id', data.user.id).single()
+    if (!data?.user) { setLogado(false); setEhAdmin(false); return }
+    setLogado(true)
+    const { data: perfil } = await supabase.from('profiles').select('nome, role').eq('id', data.user.id).single()
     setEhAdmin(perfil?.role === 'admin')
+    setNomeUsuario(perfil?.nome || data.user.email || '')
   }
 
   function falarLoja() {
@@ -57,7 +61,7 @@ export default function LojaPerfil() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#fff', fontFamily: 'Arial, sans-serif' }}>
-      <Cabecalho tela="Minha conta" />
+      <Cabecalho tela={logado && nomeUsuario ? nomeUsuario : "Minha conta"} />
 
       <div style={{ flex: 1, maxWidth: 560, margin: '0 auto', width: '100%' }}>
         <Secao icone="dados" cor="#AA1B2F" titulo="Meus dados" sub="Nome, telefone e endereco" onClick={() => navigate('/perfil/dados')} />
@@ -66,10 +70,11 @@ export default function LojaPerfil() {
         <Secao icone="whatsapp" cor="#25D366" titulo="Falar com a loja" sub="Tirar duvidas no WhatsApp" onClick={falarLoja} />
 
         {ehAdmin && (
-          <>
-            <Secao icone="painel" cor="#AA1B2F" titulo="Painel administrativo" sub="Gerenciar a loja" onClick={() => navigate('/admin')} />
-            <Secao icone="sair" cor="#777" titulo="Sair" sub="Encerrar sessao de admin" onClick={sair} />
-          </>
+          <Secao icone="painel" cor="#AA1B2F" titulo="Painel administrativo" sub="Gerenciar a loja" onClick={() => navigate('/admin')} />
+        )}
+
+        {logado && (
+          <Secao icone="sair" cor="#777" titulo="Sair" sub="Encerrar sessao" onClick={sair} />
         )}
       </div>
 

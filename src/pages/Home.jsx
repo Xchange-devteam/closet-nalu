@@ -56,13 +56,13 @@ export default function Home() {
         {pecas.map((p) => {
           const foto = p.produto_fotos?.sort((a, b) => a.ordem - b.ordem)[0]?.url
           return (
-            <section key={p.id} style={{ height: '100vh', scrollSnapAlign: 'start', position: 'relative', background: '#d8c3b0' }}>
+            <section key={p.id} style={{ height: '100vh', scrollSnapAlign: 'start', position: 'relative', background: '#000' }}>
               {foto && <img src={foto} alt={p.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
               {p.percentual_desconto > 0 && (
                 <span style={{ position: 'absolute', top: 60, left: 14, background: '#AA1B2F', color: '#fff', fontSize: 12, padding: '3px 10px', borderRadius: 14, fontFamily: 'Arial, sans-serif' }}>-{p.percentual_desconto}%</span>
               )}
               <span style={{ position: 'absolute', top: 100, right: 18, color: '#fff', fontSize: 26 }}>&#9825;</span>
-              <div style={{ position: 'absolute', bottom: 90, left: 0, right: 0, padding: 20, background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)', color: '#fff' }}>
+              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, paddingTop: 70, paddingBottom: 80, paddingLeft: 20, paddingRight: 20, background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.55) 50%, transparent 100%)', color: '#fff' }}>
                 <div style={{ fontSize: 22, marginBottom: 6 }}>{p.nome}</div>
                 <div style={{ fontFamily: 'Arial, sans-serif' }}>
                   <span style={{ textDecoration: 'line-through', opacity: 0.7, fontSize: 13 }}>R$ {brl(p.preco_base)}</span>

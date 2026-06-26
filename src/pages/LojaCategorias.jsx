@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useSacola } from '../lib/sacola'
 import BarraNav from '../components/BarraNav'
+import Cabecalho from '../components/Cabecalho'
 
 export default function LojaCategorias() {
   const [cats, setCats] = useState([])
@@ -34,9 +35,7 @@ export default function LojaCategorias() {
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#fff', fontFamily: 'Georgia, serif' }}>
 
-      <div style={{ textAlign: 'center', padding: '22px 0 14px', borderBottom: '0.5px solid #eee' }}>
-        <div style={{ fontSize: 26, letterSpacing: 5, color: '#AA1B2F' }}>CLOSET NALU</div>
-      </div>
+      <Cabecalho tela="Categorias" />
 
       <div style={{ flex: 1, overflowY: 'auto', maxWidth: 640, margin: '0 auto', width: '100%' }}>
         {carregando && <p style={{ padding: 22, color: '#999', fontFamily: 'Arial, sans-serif' }}>Carregando...</p>}

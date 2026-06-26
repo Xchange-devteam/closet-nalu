@@ -18,6 +18,7 @@ import LojaPerfil from './pages/LojaPerfil'
 import LojaFavoritos from './pages/LojaFavoritos'
 import LojaDados from './pages/LojaDados'
 import LojaEntrar from './pages/LojaEntrar'
+import LojaCadastrar from './pages/LojaCadastrar'
 
 export default function App() {
   return (
@@ -36,6 +37,7 @@ export default function App() {
         <Route path="/perfil" element={<LojaPerfil />} />
         <Route path="/favoritos" element={<LojaFavoritos />} />
         <Route path="/entrar" element={<LojaEntrar />} />
+        <Route path="/cadastrar" element={<LojaCadastrar />} />
         <Route path="/perfil/dados" element={<LojaDados />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin" element={<AdminDashboard />} />

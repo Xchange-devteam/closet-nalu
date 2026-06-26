@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { supabase } from '../lib/supabase'
 import { useSacola } from '../lib/sacola'
 import BarraNav from '../components/BarraNav'
 import Cabecalho from '../components/Cabecalho'
@@ -6,6 +7,16 @@ import Cabecalho from '../components/Cabecalho'
 export default function LojaSacola() {
   const { itens, mudarQtd, remover, total, qtdTotal } = useSacola()
   const navigate = useNavigate()
+
+  async function finalizar() {
+    const { data } = await supabase.auth.getSession()
+    const temSessao = data && data.session
+    if (temSessao) {
+      alert('Checkout Asaas em breve!')
+    } else {
+      navigate('/entrar')
+    }
+  }
 
   const brl = (v) => Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
@@ -52,7 +63,7 @@ export default function LojaSacola() {
               <span>Total</span>
               <span style={{ color: '#AA1B2F' }}>R$ {brl(total)}</span>
             </div>
-            <button onClick={() => alert('Checkout Asaas em breve!')} style={{ width: '100%', height: 48, background: '#AA1B2F', color: '#fff', border: 'none', borderRadius: 8, fontSize: 15, letterSpacing: 1, cursor: 'pointer' }}>Finalizar pedido</button>
+            <button onClick={finalizar} style={{ width: '100%', height: 48, background: '#AA1B2F', color: '#fff', border: 'none', borderRadius: 8, fontSize: 15, letterSpacing: 1, cursor: 'pointer' }}>Finalizar pedido</button>
           </div>
         </>
       )}

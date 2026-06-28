@@ -43,7 +43,7 @@ export default function Home() {
     <div style={{ height: '100vh', overflow: 'hidden', position: 'relative', fontFamily: 'Georgia, serif', background: '#000' }}>
 
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', background: 'linear-gradient(to bottom, rgba(0,0,0,0.35), transparent)' }}>
-        <img src="/logo-nalu-branca.png" alt="Closet Nalu" style={{ height: 38 }} />
+        <img src="/logo-nalu-bordo.png" alt="Closet Nalu" style={{ height: 38 }} />
       </div>
 
       <div style={{ height: '100vh', overflowY: 'scroll', scrollSnapType: 'y mandatory' }}>

@@ -4,7 +4,7 @@
   "description": "Moda feminina - Closet Nalu",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#AA1B2F",
   "theme_color": "#AA1B2F",
   "icons": [
     { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },

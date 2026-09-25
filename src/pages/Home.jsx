@@ -46,9 +46,9 @@ export default function Home() {
         <img src="/logo-nalu-bordo.png" alt="Closet Nalu" style={{ height: 38 }} />
       </div>
 
-      <div style={{ height: '100vh', overflowY: 'scroll', scrollSnapType: 'y mandatory' }}>
+      <div className="cn-scroll" style={{ height: '100vh', overflowY: 'scroll', scrollSnapType: 'y mandatory' }}>
 
-        <section style={{ height: '100vh', scrollSnapAlign: 'start', background: '#AA1B2F', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', overflow: 'hidden', position: 'relative', paddingBottom: 120 }}>
+        <section className="cn-abertura" style={{ height: '100vh', scrollSnapAlign: 'start', background: '#AA1B2F', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', overflow: 'hidden', position: 'relative', paddingBottom: 120 }}>
           <style>{`
             @keyframes slideFromLeft { 0% { transform: translateX(-120%); opacity: 0; } 60% { opacity: 1; } 100% { transform: translateX(0); opacity: 1; } }
             @keyframes slideFromRight { 0% { transform: translateX(120%); opacity: 0; } 60% { opacity: 1; } 100% { transform: translateX(0); opacity: 1; } }
@@ -62,17 +62,17 @@ export default function Home() {
         </section>
 
         {carregando && (
-          <section style={{ height: '100vh', scrollSnapAlign: 'start', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>Carregando...</section>
+          <section className="cn-estado" style={{ height: '100vh', scrollSnapAlign: 'start', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>Carregando...</section>
         )}
 
         {erro && (
-          <section style={{ height: '100vh', scrollSnapAlign: 'start', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', padding: 20, textAlign: 'center' }}>Erro: {erro}</section>
+          <section className="cn-estado" style={{ height: '100vh', scrollSnapAlign: 'start', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', padding: 20, textAlign: 'center' }}>Erro: {erro}</section>
         )}
 
         {pecas.map((p) => {
           const foto = p.produto_fotos?.sort((a, b) => a.ordem - b.ordem)[0]?.url
           return (
-            <section key={p.id} style={{ height: '100vh', scrollSnapAlign: 'start', position: 'relative', background: '#000' }}>
+            <section className="cn-peca" key={p.id} style={{ height: '100vh', scrollSnapAlign: 'start', position: 'relative', background: '#000' }}>
               {foto && <img src={foto} alt={p.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
               {p.percentual_desconto > 0 && (
                 <span style={{ position: 'absolute', top: 60, left: 14, background: '#AA1B2F', color: '#fff', fontSize: 12, padding: '3px 10px', borderRadius: 14, fontFamily: 'Arial, sans-serif' }}>-{p.percentual_desconto}%</span>

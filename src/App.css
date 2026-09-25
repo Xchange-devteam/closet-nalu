@@ -183,6 +183,17 @@
   }
 }
 
+/* ===== Vitrine base (mobile = Reels) ===== */
+.cn-scroll {
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+}
+.cn-abertura, .cn-peca, .cn-estado {
+  height: 100vh;
+  scroll-snap-align: start;
+}
+
 /* ===== Vitrine responsiva (desktop vira grade) ===== */
 @media (min-width: 768px) {
   .cn-scroll {

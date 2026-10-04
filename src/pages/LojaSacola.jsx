@@ -11,6 +11,9 @@ export default function LojaSacola() {
 
   const [cpf, setCpf] = useState('')
   const [pedirCpf, setPedirCpf] = useState(false)
+  const [nome, setNome] = useState('')
+  const [pedirNome, setPedirNome] = useState(false)
+  const [verificado, setVerificado] = useState(false)
   const [enviando, setEnviando] = useState(false)
   const [erro, setErro] = useState('')
 
@@ -39,20 +42,37 @@ export default function LojaSacola() {
     }
 
     const cpfDigitos = cpf.replace(/\D/g, '')
-    if (pedirCpf === false) {
-      const { data: perfil } = await supabase.from('profiles').select('cpf').eq('id', sessao.user.id).maybeSingle()
-      const temCpf = Boolean(perfil && perfil.cpf)
-      if (temCpf === false) {
-        setPedirCpf(true)
+    const nomeLimpo = nome.trim()
+    if (verificado === false) {
+      const { data: perfil } = await supabase.from('profiles').select('cpf, nome').eq('id', sessao.user.id).maybeSingle()
+      const faltaCpf = Boolean(perfil && perfil.cpf) === false
+      const faltaNome = Boolean(perfil && perfil.nome && perfil.nome.trim()) === false
+      setVerificado(true)
+      if (faltaCpf || faltaNome) {
+        setPedirCpf(faltaCpf)
+        setPedirNome(faltaNome)
         return
       }
-    } else if (cpfDigitos.length < 11) {
+    }
+    if (pedirNome && nomeLimpo.length < 3) {
+      setErro('Informe seu nome completo.')
+      return
+    }
+    if (pedirCpf && cpfDigitos.length < 11) {
       setErro('Informe os 11 dígitos do CPF.')
       return
     }
 
     setEnviando(true)
     try {
+      if (pedirNome) {
+        const { error: erroNome } = await supabase.from('profiles').update({ nome: nomeLimpo }).eq('id', sessao.user.id)
+        if (erroNome) {
+          setErro('Não foi possível salvar seu nome. Tente novamente.')
+          setEnviando(false)
+          return
+        }
+      }
       const { data: res, error } = await supabase.functions.invoke('swift-responder', {
         body: {
           itens: itens.map((i) => ({ produto_id: i.id, quantidade: i.quantidade, tamanho: i.tamanho })),
@@ -120,6 +140,12 @@ export default function LojaSacola() {
               <span>Total</span>
               <span style={{ color: '#AA1B2F' }}>R$ {brl(total)}</span>
             </div>
+            {pedirNome && (
+              <div style={{ marginBottom: 12 }}>
+                <label style={{ display: 'block', fontSize: 12, color: '#666', marginBottom: 4 }}>Nome completo</label>
+                <input value={nome} onChange={(e) => setNome(e.target.value)} autoComplete="name" placeholder="Seu nome e sobrenome" style={{ width: '100%', height: 44, padding: '0 12px', border: '0.5px solid #ccc', borderRadius: 8, fontSize: 16, boxSizing: 'border-box' }} />
+              </div>
+            )}
             {pedirCpf && (
               <div style={{ marginBottom: 12 }}>
                 <label style={{ display: 'block', fontSize: 12, color: '#666', marginBottom: 4 }}>CPF (necessário para o pagamento)</label>

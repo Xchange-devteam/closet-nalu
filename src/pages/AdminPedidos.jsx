@@ -91,14 +91,14 @@ export default function AdminPedidos() {
                   {itens.length === 0 && <div style={{ fontSize: 12, color: '#aaa' }}>Carregando itens...</div>}
                   {itens.map((it) => (
                     <div key={it.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: '#555', padding: '4px 0' }}>
-                      <span>{it.quantidade}x {it.nome_produto}</span>
+                      <span>{it.quantidade}x {it.nome_produto}{it.tamanho ? ' (' + it.tamanho + ')' : ''}</span>
                       <span>R$ {brl(it.preco_unit * it.quantidade)}</span>
                     </div>
                   ))}
                   <div style={{ borderTop: '0.5px solid #eee', marginTop: 10, paddingTop: 10, fontSize: 12, color: '#888' }}>
                     {p.email_cliente && <div>Email: {p.email_cliente}</div>}
                     {p.telefone_cliente && <div>Telefone: {p.telefone_cliente}</div>}
-                    {p.asaas_invoice_url && <div style={{ marginTop: 6 }}><a href={p.asaas_invoice_url} target="_blank" rel="noreferrer" style={{ color: '#AA1B2F' }}>Ver cobranca Asaas</a></div>}
+                    {p.asaas_invoice_url && <div style={{ marginTop: 6 }}><a href={p.asaas_invoice_url} target="_blank" rel="noreferrer" style={{ color: '#AA1B2F' }}>Ver cobrança Asaas</a></div>}
                   </div>
                 </div>
               )}

@@ -53,7 +53,7 @@ export default function LojaSacola() {
 
     setEnviando(true)
     try {
-      const { data: res, error } = await supabase.functions.invoke('criar-cobranca-asaas', {
+      const { data: res, error } = await supabase.functions.invoke('swift-responder', {
         body: {
           itens: itens.map((i) => ({ produto_id: i.id, quantidade: i.quantidade, tamanho: i.tamanho })),
           cpf: pedirCpf ? cpfDigitos : undefined,

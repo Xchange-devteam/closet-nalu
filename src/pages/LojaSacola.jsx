@@ -6,7 +6,7 @@ import BarraNav from '../components/BarraNav'
 import Cabecalho from '../components/Cabecalho'
 
 // Pix fica oculto ate a chave Pix ser cadastrada no Asaas; depois mude para true
-const PIX_ATIVO = false
+const PIX_ATIVO = true
 const OPCOES_PAGAMENTO = PIX_ATIVO ? [['PIX', 'Pix'], ['BOLETO', 'Boleto']] : [['BOLETO', 'Boleto']]
 
 export default function LojaSacola() {

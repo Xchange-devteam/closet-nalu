@@ -5,6 +5,10 @@ import { useSacola } from '../lib/sacola'
 import BarraNav from '../components/BarraNav'
 import Cabecalho from '../components/Cabecalho'
 
+// Pix fica oculto ate a chave Pix ser cadastrada no Asaas; depois mude para true
+const PIX_ATIVO = false
+const OPCOES_PAGAMENTO = PIX_ATIVO ? [['PIX', 'Pix'], ['BOLETO', 'Boleto']] : [['BOLETO', 'Boleto']]
+
 export default function LojaSacola() {
   const { itens, mudarQtd, remover, limpar, total, qtdTotal } = useSacola()
   const navigate = useNavigate()
@@ -14,6 +18,7 @@ export default function LojaSacola() {
   const [nome, setNome] = useState('')
   const [pedirNome, setPedirNome] = useState(false)
   const [verificado, setVerificado] = useState(false)
+  const [forma, setForma] = useState(PIX_ATIVO ? 'PIX' : 'BOLETO')
   const [enviando, setEnviando] = useState(false)
   const [erro, setErro] = useState('')
 
@@ -77,6 +82,7 @@ export default function LojaSacola() {
         body: {
           itens: itens.map((i) => ({ produto_id: i.id, quantidade: i.quantidade, tamanho: i.tamanho })),
           cpf: pedirCpf ? cpfDigitos : undefined,
+          forma,
         },
       })
       if (error) {
@@ -88,7 +94,7 @@ export default function LojaSacola() {
         return
       }
       limpar()
-      window.location.href = res.invoice_url
+      navigate('/pagamento/' + res.pedido_id)
     } catch (e) {
       setErro('Não foi possível gerar o pagamento. Tente novamente.')
       setEnviando(false)
@@ -139,6 +145,14 @@ export default function LojaSacola() {
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14, fontSize: 16, fontWeight: 500, color: '#222' }}>
               <span>Total</span>
               <span style={{ color: '#AA1B2F' }}>R$ {brl(total)}</span>
+            </div>
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>Forma de pagamento</div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                {OPCOES_PAGAMENTO.map(([valor, rotulo]) => (
+                  <span key={valor} onClick={() => setForma(valor)} style={{ flex: 1, textAlign: 'center', padding: '10px 0', borderRadius: 8, cursor: 'pointer', fontSize: 14, border: '1px solid ' + (forma === valor ? '#AA1B2F' : '#ddd'), color: forma === valor ? '#AA1B2F' : '#666', background: forma === valor ? '#fdf2f3' : '#fff', fontWeight: forma === valor ? 600 : 400 }}>{rotulo}</span>
+                ))}
+              </div>
             </div>
             {pedirNome && (
               <div style={{ marginBottom: 12 }}>

@@ -1,7 +1,8 @@
 // criar-cobranca-asaas — Closet Nalu
-// Recebe { itens: [{ produto_id, quantidade, tamanho? }], cpf?, telefone? } + JWT do cliente.
+// Recebe { itens: [{ produto_id, quantidade, tamanho? }], forma: 'PIX'|'BOLETO', cpf?, telefone? } + JWT.
 // Calcula o total com os preços do banco, cria/reusa o cliente no Asaas,
-// grava pedidos + pedido_itens e devolve o link de pagamento (invoice_url).
+// cria a cobrança no meio escolhido, guarda QR Code Pix / linha do boleto no pedido
+// e devolve { pedido_id, invoice_url } para o checkout transparente.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
 const CORS = {
@@ -88,6 +89,8 @@ Deno.serve(async (req) => {
 
     // 2. Corpo da requisição
     const body: any = await req.json().catch(() => ({}));
+    // Sem forma informada (versão antiga do site) → UNDEFINED: cliente escolhe na página do Asaas
+    const forma = body.forma === 'BOLETO' || body.forma === 'PIX' ? body.forma : 'UNDEFINED';
     const itens: any[] = Array.isArray(body.itens) ? body.itens : [];
     if (itens.length === 0 || itens.length > 50) return json({ error: 'sacola_vazia' }, 400);
     for (const it of itens) {
@@ -181,6 +184,7 @@ Deno.serve(async (req) => {
         telefone_cliente: telefone || null,
         total,
         status: 'pendente',
+        forma_pagamento: forma === 'UNDEFINED' ? null : forma,
       })
       .select('id')
       .single();
@@ -192,21 +196,45 @@ Deno.serve(async (req) => {
       .insert(linhas.map((l) => ({ ...l, pedido_id: pedidoId })));
     if (itErr) throw itErr;
 
-    // 7. Cobrança no Asaas (cliente escolhe PIX, boleto ou cartão na página)
+    // 7. Cobrança no Asaas, já no meio escolhido
     const cobranca = await asaas('/payments', 'POST', {
       customer: customerId,
-      billingType: 'UNDEFINED',
+      billingType: forma,
       value: total,
       dueDate: vencimento(3),
       description: `Pedido Closet Nalu #${pedidoId.slice(0, 8)}`,
       externalReference: pedidoId,
     });
 
+    // 8. Dados para mostrar no próprio site (falhas aqui não derrubam o pedido)
+    const extras: Record<string, unknown> = {};
+    if (forma === 'PIX') {
+      try {
+        const pix = await asaas(`/payments/${cobranca.id}/pixQrCode`);
+        extras.pix_qrcode = pix.encodedImage ?? null;
+        extras.pix_copia_cola = pix.payload ?? null;
+        extras.pix_expira_em = pix.expirationDate
+          ? String(pix.expirationDate).replace(' ', 'T') + '-03:00'
+          : null;
+      } catch (e) {
+        console.error('QR Code Pix indisponível:', e);
+      }
+    } else if (forma === 'BOLETO') {
+      extras.boleto_url = cobranca.bankSlipUrl ?? null;
+      try {
+        const linha = await asaas(`/payments/${cobranca.id}/identificationField`);
+        extras.boleto_linha = linha.identificationField ?? null;
+      } catch (e) {
+        console.error('Linha digitável indisponível:', e);
+      }
+    }
+
     await admin
       .from('pedidos')
       .update({
         asaas_payment_id: cobranca.id,
         asaas_invoice_url: cobranca.invoiceUrl,
+        ...extras,
         atualizado_em: new Date().toISOString(),
       })
       .eq('id', pedidoId);

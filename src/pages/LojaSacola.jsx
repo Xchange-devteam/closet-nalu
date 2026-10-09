@@ -12,12 +12,12 @@ const OPCOES_PAGAMENTO = PIX_ATIVO ? [['PIX', 'Pix'], ['BOLETO', 'Boleto'], ['CA
 const BANDEIRAS = [
   { id: 'visa', nome: 'Visa', arquivo: 'visa.webp' },
   { id: 'mastercard', nome: 'Mastercard', arquivo: 'mastercard.webp' },
-  { id: 'elo', nome: 'Elo', arquivo: 'elo.svg' },
+  { id: 'elo', nome: 'Elo', arquivo: 'elo.webp' },
   { id: 'amex', nome: 'Amex', arquivo: 'amex.webp' },
   { id: 'hipercard', nome: 'Hipercard', arquivo: 'hipercard.webp' },
 ]
 
-const CAMPO = { flex: 1, minWidth: 0, width: '100%', height: 44, padding: '0 12px', border: '0.5px solid #ccc', borderRadius: 8, fontSize: 16, boxSizing: 'border-box' }
+const CAMPO = { flex: '1 1 auto', minWidth: 0, width: '100%', height: 44, padding: '0 12px', border: '0.5px solid #ccc', borderRadius: 8, fontSize: 16, boxSizing: 'border-box' }
 const soNum = (v) => String(v || '').replace(/\D/g, '')
 const mascaraCartao = (v) => soNum(v).slice(0, 19).replace(/(\d{4})(?=\d)/g, '$1 ')
 const mascaraValidade = (v) => { const d = soNum(v).slice(0, 4); return d.length > 2 ? d.slice(0, 2) + '/' + d.slice(2) : d }

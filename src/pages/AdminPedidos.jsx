@@ -10,6 +10,14 @@ const STATUS_INFO = {
   falhou: { rotulo: 'Falhou', cor: '#a32d2d', bg: '#fbe9e9' },
 }
 
+const FORMAS = { PIX: 'Pix', BOLETO: 'Boleto', CARTAO: 'Cartão' }
+
+function formaTexto(p) {
+  const f = FORMAS[p.forma_pagamento]
+  if (f == null) return ''
+  return ' · ' + f + (p.forma_pagamento === 'CARTAO' && p.parcelas ? ' ' + p.parcelas + 'x' : '')
+}
+
 const FILTROS = ['todos', 'pendente', 'pago', 'cancelado', 'estornado', 'falhou']
 
 export default function AdminPedidos() {
@@ -78,7 +86,7 @@ export default function AdminPedidos() {
               <div onClick={() => abrir(p.id)} style={{ padding: '14px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12 }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 14, color: '#333', fontWeight: 500 }}>{p.nome_cliente || 'Cliente'}</div>
-                  <div style={{ fontSize: 11, color: '#999', marginTop: 2 }}>{dataBr(p.criado_em)}</div>
+                  <div style={{ fontSize: 11, color: '#999', marginTop: 2 }}>{dataBr(p.criado_em)}{formaTexto(p)}</div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
                   <div style={{ fontSize: 14, color: '#333', fontWeight: 600 }}>R$ {brl(p.total)}</div>

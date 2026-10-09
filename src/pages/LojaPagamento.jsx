@@ -6,6 +6,14 @@ import Cabecalho from '../components/Cabecalho'
 
 const CAMPOS = 'id, total, status, forma_pagamento, pix_qrcode, pix_copia_cola, pix_expira_em, boleto_linha, boleto_url, asaas_invoice_url'
 
+// Linha digitavel no formato do boleto impresso: 00000.00000 00000.000000 00000.000000 0 00000000000000
+function formatarLinha(linha) {
+  const d = String(linha || '').replace(/\D/g, '')
+  if (d.length !== 47) return linha
+  return d.slice(0, 5) + '.' + d.slice(5, 10) + ' ' + d.slice(10, 15) + '.' + d.slice(15, 21) + ' ' +
+    d.slice(21, 26) + '.' + d.slice(26, 32) + ' ' + d.slice(32, 33) + ' ' + d.slice(33)
+}
+
 export default function LojaPagamento() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -93,7 +101,7 @@ export default function LojaPagamento() {
             {pedido.boleto_linha && (
               <>
                 <div style={{ fontSize: 12, color: '#777', textAlign: 'center' }}>Linha digitável:</div>
-                <div style={caixa}>{pedido.boleto_linha}</div>
+                <div style={caixa}>{formatarLinha(pedido.boleto_linha)}</div>
                 <button onClick={() => copiar(pedido.boleto_linha, 'boleto')} style={botao}>{copiado === 'boleto' ? 'Linha copiada ✓' : 'Copiar linha digitável'}</button>
               </>
             )}

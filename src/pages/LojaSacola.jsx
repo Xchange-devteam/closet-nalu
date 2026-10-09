@@ -10,11 +10,11 @@ const PIX_ATIVO = true
 const OPCOES_PAGAMENTO = PIX_ATIVO ? [['PIX', 'Pix'], ['BOLETO', 'Boleto'], ['CARTAO', 'Cartão']] : [['BOLETO', 'Boleto'], ['CARTAO', 'Cartão']]
 
 const BANDEIRAS = [
-  { id: 'visa', nome: 'Visa' },
-  { id: 'mastercard', nome: 'Mastercard' },
-  { id: 'elo', nome: 'Elo' },
-  { id: 'amex', nome: 'Amex' },
-  { id: 'hipercard', nome: 'Hipercard' },
+  { id: 'visa', nome: 'Visa', arquivo: 'visa.webp' },
+  { id: 'mastercard', nome: 'Mastercard', arquivo: 'mastercard.webp' },
+  { id: 'elo', nome: 'Elo', arquivo: 'elo.svg' },
+  { id: 'amex', nome: 'Amex', arquivo: 'amex.webp' },
+  { id: 'hipercard', nome: 'Hipercard', arquivo: 'hipercard.webp' },
 ]
 
 const CAMPO = { flex: 1, minWidth: 0, width: '100%', height: 44, padding: '0 12px', border: '0.5px solid #ccc', borderRadius: 8, fontSize: 16, boxSizing: 'border-box' }
@@ -29,11 +29,11 @@ const mascaraFone = (v) => {
   return '(' + d.slice(0, 2) + ') ' + d.slice(2, d.length - 4) + '-' + d.slice(d.length - 4)
 }
 
-// Mostra o logo oficial se existir em public/bandeiras/<id>.svg; se nao, mostra o nome
-function Bandeira({ id, nome }) {
+// Mostra o logo de public/bandeiras/<arquivo>; se a imagem falhar, mostra o nome
+function Bandeira({ arquivo, nome }) {
   const [semImagem, setSemImagem] = useState(false)
   if (semImagem) return <span style={{ fontSize: 11, color: '#555', border: '0.5px solid #ddd', borderRadius: 4, padding: '3px 7px', background: '#fafafa' }}>{nome}</span>
-  return <img src={'/bandeiras/' + id + '.svg'} alt={nome} onError={() => setSemImagem(true)} style={{ height: 22, width: 'auto' }} />
+  return <img src={'/bandeiras/' + arquivo} alt={nome} onError={() => setSemImagem(true)} style={{ height: 22, width: 'auto' }} />
 }
 
 export default function LojaSacola() {
@@ -213,7 +213,7 @@ export default function LojaSacola() {
                 </select>
                 <div style={{ fontSize: 12, color: '#555', margin: '12px 0 6px', textAlign: 'center' }}>Aceitamos todos os cartões</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: 6 }}>
-                  {BANDEIRAS.map((b) => <Bandeira key={b.id} id={b.id} nome={b.nome} />)}
+                  {BANDEIRAS.map((b) => <Bandeira key={b.id} arquivo={b.arquivo} nome={b.nome} />)}
                 </div>
                 <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <input value={cartao.numero} onChange={(e) => mudarCartao('numero', mascaraCartao(e.target.value))} inputMode="numeric" autoComplete="cc-number" placeholder="Número do cartão" style={CAMPO} />

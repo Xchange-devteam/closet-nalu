@@ -1,5 +1,6 @@
 // criar-cobranca-asaas — Closet Nalu
-// Recebe { itens: [{ produto_id, quantidade, tamanho? }], forma: 'PIX'|'BOLETO', cpf?, telefone? } + JWT.
+// Recebe { itens, forma: 'PIX'|'BOLETO'|'CARTAO', parcelas?, cartao?, titular?, cpf?, telefone? } + JWT.
+// Cartao: os dados vao direto ao Asaas nesta requisicao; nunca sao gravados nem registrados em log.
 // Calcula o total com os preços do banco, cria/reusa o cliente no Asaas,
 // cria a cobrança no meio escolhido, guarda QR Code Pix / linha do boleto no pedido
 // e devolve { pedido_id, invoice_url } para o checkout transparente.
@@ -20,6 +21,8 @@ const json = (body: unknown, status = 200) =>
 const ASAAS_URL = (Deno.env.get('ASAAS_API_URL') ?? '').replace(/\/+$/, '');
 const ASAAS_KEY = Deno.env.get('ASAAS_API_KEY') ?? '';
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? '';
+const SITE_URL = (Deno.env.get('SITE_URL') ?? 'https://www.closetnalu.com.br').replace(/\/+$/, '');
+const MAX_PARCELAS = 3;
 
 function serviceKey(): string {
   const legacy = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
@@ -90,7 +93,44 @@ Deno.serve(async (req) => {
     // 2. Corpo da requisição
     const body: any = await req.json().catch(() => ({}));
     // Sem forma informada (versão antiga do site) → UNDEFINED: cliente escolhe na página do Asaas
-    const forma = body.forma === 'BOLETO' || body.forma === 'PIX' ? body.forma : 'UNDEFINED';
+    const forma: string =
+      body.forma === 'PIX' || body.forma === 'BOLETO' || body.forma === 'CARTAO' ? body.forma : 'UNDEFINED';
+    const billingType = forma === 'CARTAO' ? 'CREDIT_CARD' : forma;
+    const parcelas =
+      forma === 'CARTAO' ? Math.min(MAX_PARCELAS, Math.max(1, Math.floor(Number(body.parcelas) || 1))) : 1;
+
+    // Dados do cartao (checkout transparente de credito)
+    const cartao = {
+      nome: String(body.cartao?.nome ?? '').trim().toUpperCase(),
+      numero: soDigitos(body.cartao?.numero),
+      mes: soDigitos(body.cartao?.mes).padStart(2, '0'),
+      ano: soDigitos(body.cartao?.ano),
+      cvv: soDigitos(body.cartao?.cvv),
+    };
+    const titular = {
+      cpf: soDigitos(body.titular?.cpf),
+      cep: soDigitos(body.titular?.cep),
+      numero: String(body.titular?.numero ?? '').trim(),
+      telefone: soDigitos(body.titular?.telefone),
+    };
+    if (forma === 'CARTAO') {
+      const mesNum = Number(cartao.mes);
+      const cartaoOk =
+        cartao.nome.length >= 3 &&
+        cartao.numero.length >= 13 && cartao.numero.length <= 19 &&
+        mesNum >= 1 && mesNum <= 12 &&
+        cartao.ano.length === 4 &&
+        cartao.cvv.length >= 3 && cartao.cvv.length <= 4 &&
+        cpfValido(titular.cpf) &&
+        titular.cep.length === 8 &&
+        titular.numero.length >= 1 &&
+        titular.telefone.length >= 10 && titular.telefone.length <= 11;
+      if (cartaoOk === false) return json({ error: 'cartao_incompleto' }, 400);
+    }
+    const ipCliente =
+      (req.headers.get('x-forwarded-for') ?? '').split(',')[0].trim() ||
+      req.headers.get('cf-connecting-ip') ||
+      '';
     const itens: any[] = Array.isArray(body.itens) ? body.itens : [];
     if (itens.length === 0 || itens.length > 50) return json({ error: 'sacola_vazia' }, 400);
     for (const it of itens) {
@@ -185,6 +225,7 @@ Deno.serve(async (req) => {
         total,
         status: 'pendente',
         forma_pagamento: forma === 'UNDEFINED' ? null : forma,
+        parcelas: forma === 'CARTAO' ? parcelas : null,
       })
       .select('id')
       .single();
@@ -197,14 +238,55 @@ Deno.serve(async (req) => {
     if (itErr) throw itErr;
 
     // 7. Cobrança no Asaas, já no meio escolhido
-    const cobranca = await asaas('/payments', 'POST', {
+    const dadosCobranca: Record<string, unknown> = {
       customer: customerId,
-      billingType: forma,
-      value: total,
+      billingType,
       dueDate: vencimento(3),
       description: `Pedido Closet Nalu #${pedidoId.slice(0, 8)}`,
       externalReference: pedidoId,
-    });
+    };
+    if (forma === 'CARTAO' && parcelas >= 2) {
+      dadosCobranca.installmentCount = parcelas;
+      dadosCobranca.totalValue = total;
+    } else {
+      dadosCobranca.value = total;
+    }
+    if (forma === 'CARTAO') {
+      dadosCobranca.creditCard = {
+        holderName: cartao.nome,
+        number: cartao.numero,
+        expiryMonth: cartao.mes,
+        expiryYear: cartao.ano,
+        ccv: cartao.cvv,
+      };
+      dadosCobranca.creditCardHolderInfo = {
+        name: cartao.nome,
+        email,
+        cpfCnpj: titular.cpf,
+        postalCode: titular.cep,
+        addressNumber: titular.numero,
+        mobilePhone: titular.telefone,
+      };
+      if (ipCliente) dadosCobranca.remoteIp = ipCliente;
+    }
+
+    let cobranca: any;
+    try {
+      cobranca = await asaas('/payments', 'POST', dadosCobranca);
+    } catch (e) {
+      if (forma === 'CARTAO') {
+        // Cartao recusado: o Asaas nao cria a cobranca. Marca o pedido como falhou e avisa o cliente.
+        const motivo = String((e as Error)?.message ?? '').replace(/^Asaas: /, '');
+        console.error('Cartao nao aprovado no pedido', pedidoId, motivo);
+        await admin
+          .from('pedidos')
+          .update({ status: 'falhou', atualizado_em: new Date().toISOString() })
+          .eq('id', pedidoId);
+        return json({ error: 'cartao_recusado', detalhe: motivo }, 402);
+      }
+      throw e;
+    }
+    const aprovado = forma === 'CARTAO' && (cobranca.status === 'CONFIRMED' || cobranca.status === 'RECEIVED');
 
     // 8. Dados para mostrar no próprio site (falhas aqui não derrubam o pedido)
     const extras: Record<string, unknown> = {};
@@ -235,6 +317,7 @@ Deno.serve(async (req) => {
         asaas_payment_id: cobranca.id,
         asaas_invoice_url: cobranca.invoiceUrl,
         ...extras,
+        ...(aprovado ? { status: 'pago' } : {}),
         atualizado_em: new Date().toISOString(),
       })
       .eq('id', pedidoId);

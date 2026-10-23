@@ -39,6 +39,66 @@ const admin = createClient(SUPABASE_URL, serviceKey(), {
   auth: { persistSession: false },
 });
 
+// ---------- Frete (Melhor Envio) ----------
+const ME_URL = (Deno.env.get('MELHOR_ENVIO_URL') ?? 'https://melhorenvio.com.br').replace(/\/+$/, '');
+const ME_TOKEN = Deno.env.get('MELHOR_ENVIO_TOKEN') ?? '';
+const CEP_ORIGEM = Deno.env.get('CEP_ORIGEM') ?? '28941068';
+// Medidas padrao de cada peca embalada (cm e kg). Ajuste aqui se precisar.
+const PECA = { width: 20, height: 4, length: 28, weight: 0.4 };
+
+async function cotarFrete(cepDestino: string, itens: any[]) {
+  const ids = [...new Set(itens.map((i) => i?.produto_id).filter((x) => typeof x === 'string'))];
+  const precos = new Map<string, number>();
+  if (ids.length > 0) {
+    const { data } = await admin
+      .from('produtos')
+      .select('id, preco_base, preco_promocional, em_promocao')
+      .in('id', ids);
+    for (const p of data ?? []) {
+      precos.set(p.id, p.em_promocao && p.preco_promocional ? Number(p.preco_promocional) : Number(p.preco_base));
+    }
+  }
+  const products = itens
+    .filter((i) => precos.has(i?.produto_id))
+    .map((i, n) => ({
+      id: String(n + 1),
+      ...PECA,
+      insurance_value: precos.get(i.produto_id),
+      quantity: Math.max(1, Math.min(20, Math.floor(Number(i.quantidade) || 1))),
+    }));
+  if (products.length === 0) return [];
+
+  const r = await fetch(`${ME_URL}/api/v2/me/shipment/calculate`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${ME_TOKEN}`,
+      'User-Agent': 'Closet Nalu (loja.closetnalu@gmail.com)',
+    },
+    body: JSON.stringify({
+      from: { postal_code: CEP_ORIGEM },
+      to: { postal_code: cepDestino },
+      products,
+      options: { receipt: false, own_hand: false },
+    }),
+  });
+  const data: any = await r.json().catch(() => null);
+  if (r.ok === false || Array.isArray(data) === false) {
+    console.error('Melhor Envio:', r.status, String(JSON.stringify(data)).slice(0, 300));
+    throw new Error('frete_indisponivel');
+  }
+  return data
+    .filter((sv: any) => sv && sv.error == null && (sv.price == null) === false)
+    .map((sv: any) => ({
+      id: Number(sv.id),
+      nome: `${sv.company?.name ?? ''} ${sv.name ?? ''}`.trim(),
+      preco: Math.round(Number(sv.custom_price ?? sv.price) * 100) / 100,
+      prazo: Number(sv.custom_delivery_time ?? sv.delivery_time) || null,
+    }))
+    .sort((a: any, b: any) => a.preco - b.preco);
+}
+
 async function asaas(path: string, method = 'GET', body?: unknown) {
   const r = await fetch(`${ASAAS_URL}${path}`, {
     method,
@@ -84,14 +144,27 @@ Deno.serve(async (req) => {
   let pedidoId: string | null = null;
 
   try {
+    const body: any = await req.json().catch(() => ({}));
+
+    // 0. Cotacao de frete (sem login: o cliente ve o frete antes de entrar)
+    if (body.acao === 'cotar_frete') {
+      const cepDestino = soDigitos(body.cep);
+      if ((cepDestino.length === 8) === false) return json({ error: 'cep_invalido' }, 400);
+      try {
+        const opcoes = await cotarFrete(cepDestino, Array.isArray(body.itens) ? body.itens : []);
+        return json({ opcoes });
+      } catch (e) {
+        return json({ error: 'frete_indisponivel' }, 502);
+      }
+    }
+
     // 1. Usuário logado
     const token = (req.headers.get('Authorization') ?? '').replace(/^Bearer\s+/i, '');
     const { data: auth, error: authErr } = await admin.auth.getUser(token);
     if (authErr || !auth?.user) return json({ error: 'nao_autenticado' }, 401);
     const user = auth.user;
 
-    // 2. Corpo da requisição
-    const body: any = await req.json().catch(() => ({}));
+    // 2. Corpo da requisição (lido no início)
     // Sem forma informada (versão antiga do site) → UNDEFINED: cliente escolhe na página do Asaas
     const forma: string =
       body.forma === 'PIX' || body.forma === 'BOLETO' || body.forma === 'CARTAO' ? body.forma : 'UNDEFINED';
@@ -198,7 +271,39 @@ Deno.serve(async (req) => {
         tamanho,
       });
     }
-    const total = totalCentavos / 100;
+    const subtotal = totalCentavos / 100;
+
+    // Entrega: retirada na loja (gratis) ou frete recalculado aqui no servidor
+    const ent: any = body.entrega ?? {};
+    const tipoEntrega = ent.tipo === 'RETIRADA' ? 'RETIRADA' : ent.tipo === 'ENTREGA' ? 'ENTREGA' : '';
+    if (tipoEntrega === '') return json({ error: 'entrega_obrigatoria' }, 400);
+    const endereco = {
+      cep: soDigitos(ent.cep),
+      rua: String(ent.rua ?? '').trim(),
+      numero: String(ent.numero ?? '').trim(),
+      complemento: String(ent.complemento ?? '').trim(),
+      bairro: String(ent.bairro ?? '').trim(),
+      cidade: String(ent.cidade ?? '').trim(),
+      uf: String(ent.uf ?? '').trim().toUpperCase().slice(0, 2),
+    };
+    let frete: { valor: number; nome: string; id: number | null; prazo: number | null } =
+      { valor: 0, nome: 'Retirada na loja', id: null, prazo: null };
+    if (tipoEntrega === 'ENTREGA') {
+      const enderecoOk =
+        endereco.cep.length === 8 && endereco.rua.length > 0 && endereco.numero.length > 0 &&
+        endereco.bairro.length > 0 && endereco.cidade.length > 0 && endereco.uf.length === 2;
+      if (enderecoOk === false) return json({ error: 'endereco_incompleto' }, 400);
+      let opcoes: any[] = [];
+      try {
+        opcoes = await cotarFrete(endereco.cep, itens);
+      } catch (e) {
+        return json({ error: 'frete_indisponivel' }, 502);
+      }
+      const escolhido = opcoes.find((o) => Number(o.id) === Number(ent.servico_id));
+      if (escolhido === undefined) return json({ error: 'frete_invalido' }, 400);
+      frete = { valor: escolhido.preco, nome: escolhido.nome, id: escolhido.id, prazo: escolhido.prazo };
+    }
+    const total = Math.round((subtotal + frete.valor) * 100) / 100;
     if (total < 5) return json({ error: 'valor_minimo', minimo: 5 }, 400);
 
     // 5. Cliente no Asaas (cria uma vez, reusa depois)
@@ -223,6 +328,19 @@ Deno.serve(async (req) => {
         email_cliente: email,
         telefone_cliente: telefone || null,
         total,
+        subtotal,
+        frete_valor: frete.valor,
+        frete_servico: frete.nome,
+        frete_servico_id: frete.id,
+        frete_prazo: frete.prazo,
+        entrega_tipo: tipoEntrega,
+        entrega_cep: tipoEntrega === 'ENTREGA' ? endereco.cep : null,
+        entrega_rua: tipoEntrega === 'ENTREGA' ? endereco.rua : null,
+        entrega_numero: tipoEntrega === 'ENTREGA' ? endereco.numero : null,
+        entrega_complemento: tipoEntrega === 'ENTREGA' ? endereco.complemento || null : null,
+        entrega_bairro: tipoEntrega === 'ENTREGA' ? endereco.bairro : null,
+        entrega_cidade: tipoEntrega === 'ENTREGA' ? endereco.cidade : null,
+        entrega_uf: tipoEntrega === 'ENTREGA' ? endereco.uf : null,
         status: 'pendente',
         forma_pagamento: forma === 'UNDEFINED' ? null : forma,
         parcelas: forma === 'CARTAO' ? parcelas : null,

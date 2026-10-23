@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useSacola } from '../lib/sacola'
@@ -19,6 +19,7 @@ const BANDEIRAS = [
 
 const CAMPO = { flex: '1 1 auto', minWidth: 0, width: '100%', height: 44, padding: '0 12px', border: '0.5px solid #ccc', borderRadius: 8, fontSize: 16, boxSizing: 'border-box' }
 const soNum = (v) => String(v || '').replace(/\D/g, '')
+const opcaoEstilo = (ativo) => ({ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', border: '1px solid ' + (ativo ? '#AA1B2F' : '#e5e5e5'), borderRadius: 8, cursor: 'pointer', fontSize: 13, color: '#333', background: ativo ? '#fdf2f3' : '#fff' })
 const mascaraCartao = (v) => soNum(v).slice(0, 19).replace(/(\d{4})(?=\d)/g, '$1 ')
 const mascaraValidade = (v) => { const d = soNum(v).slice(0, 4); return d.length > 2 ? d.slice(0, 2) + '/' + d.slice(2) : d }
 const mascaraCep = (v) => { const d = soNum(v).slice(0, 8); return d.length > 5 ? d.slice(0, 5) + '-' + d.slice(5) : d }
@@ -49,6 +50,48 @@ export default function LojaSacola() {
   const [parcelas, setParcelas] = useState(1)
   const [cartao, setCartao] = useState({ numero: '', nome: '', validade: '', cvv: '', cpf: '', cep: '', numeroEnd: '', telefone: '' })
   const mudarCartao = (campo, valor) => setCartao((c) => ({ ...c, [campo]: valor }))
+
+  // ---------- Entrega ----------
+  const [cep, setCep] = useState('')
+  const [fretes, setFretes] = useState([])
+  const [cotando, setCotando] = useState(false)
+  const [erroFrete, setErroFrete] = useState('')
+  const [entregaSel, setEntregaSel] = useState('')
+  const [end, setEnd] = useState({ rua: '', numero: '', complemento: '', bairro: '', cidade: '', uf: '' })
+  const mudarEnd = (campo, valor) => setEnd((e) => ({ ...e, [campo]: valor }))
+
+  async function cotarFrete(valor) {
+    const d = soNum(valor)
+    setFretes([])
+    setErroFrete('')
+    setEntregaSel((sel) => (sel === 'RETIRADA' ? sel : ''))
+    if (d.length < 8) return
+    setCotando(true)
+    try {
+      const [resFrete, resCep] = await Promise.all([
+        supabase.functions.invoke('swift-responder', {
+          body: { acao: 'cotar_frete', cep: d, itens: itens.map((i) => ({ produto_id: i.id, quantidade: i.quantidade })) },
+        }),
+        fetch('https://viacep.com.br/ws/' + d + '/json/').then((r) => r.json()).catch(() => null),
+      ])
+      const cepOk = Boolean(resCep) && Boolean(resCep.erro) === false
+      if (cepOk) {
+        setEnd((e) => ({ ...e, rua: resCep.logradouro || '', bairro: resCep.bairro || '', cidade: resCep.localidade || '', uf: resCep.uf || '' }))
+      }
+      const opcoes = (resFrete.data && resFrete.data.opcoes) || []
+      setFretes(opcoes)
+      if (cepOk === false) setErroFrete('CEP não encontrado. Confira os números.')
+      else if (opcoes.length === 0) setErroFrete('Não encontramos opções de entrega para este CEP. Você pode retirar na loja.')
+    } catch (e) {
+      setErroFrete('Não foi possível calcular o frete agora. Tente novamente.')
+    }
+    setCotando(false)
+  }
+
+  // Se mudar a quantidade de pecas, o frete muda: cota de novo
+  useEffect(() => {
+    if (soNum(cep).length === 8) cotarFrete(cep)
+  }, [qtdTotal])
   function cartaoValido() {
     const partes = cartao.validade.split('/')
     const mes = Number(partes[0])
@@ -74,6 +117,10 @@ export default function LojaSacola() {
     valor_minimo: 'O valor mínimo para pagamento é R$ 5,00.',
     nao_autenticado: 'Sua sessão expirou. Entre novamente.',
     cartao_incompleto: 'Confira os dados do cartão e do titular.',
+    entrega_obrigatoria: 'Escolha a forma de entrega.',
+    endereco_incompleto: 'Complete o endereço de entrega.',
+    frete_invalido: 'O valor do frete mudou. Escolha a entrega de novo.',
+    frete_indisponivel: 'Não foi possível calcular o frete agora. Tente novamente.',
   }
 
   async function finalizar() {
@@ -108,6 +155,15 @@ export default function LojaSacola() {
       return
     }
 
+    if (entregaSel === '') {
+      setErro('Escolha a entrega: digite seu CEP ou selecione retirar na loja.')
+      return
+    }
+    const precisaEndereco = entregaSel === 'RETIRADA' ? false : true
+    if (precisaEndereco && (end.rua.trim() === '' || end.numero.trim() === '' || end.bairro.trim() === '' || end.cidade.trim() === '' || end.uf.trim().length < 2)) {
+      setErro('Complete o endereço de entrega (rua, número, bairro, cidade e estado).')
+      return
+    }
     if (forma === 'CARTAO' && cartaoValido() === false) {
       setErro('Confira os dados do cartão: número, nome, validade, CVV, CPF do titular, CEP, número do endereço e celular.')
       return
@@ -129,6 +185,9 @@ export default function LojaSacola() {
           cpf: pedirCpf ? cpfDigitos : undefined,
           forma,
           parcelas: forma === 'CARTAO' ? parcelas : undefined,
+          entrega: entregaSel === 'RETIRADA'
+            ? { tipo: 'RETIRADA' }
+            : { tipo: 'ENTREGA', servico_id: Number(entregaSel), cep: soNum(cep), rua: end.rua, numero: end.numero, complemento: end.complemento, bairro: end.bairro, cidade: end.cidade, uf: end.uf },
           cartao: forma === 'CARTAO' ? { nome: cartao.nome, numero: soNum(cartao.numero), mes: cartao.validade.split('/')[0], ano: '20' + soNum(cartao.validade.split('/')[1]), cvv: soNum(cartao.cvv) } : undefined,
           titular: forma === 'CARTAO' ? { cpf: soNum(cartao.cpf), cep: soNum(cartao.cep), numero: cartao.numeroEnd, telefone: soNum(cartao.telefone) } : undefined,
         },
@@ -151,6 +210,9 @@ export default function LojaSacola() {
   }
 
   const brl = (v) => Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  const freteEscolhido = fretes.find((f) => String(f.id) === entregaSel)
+  const freteValor = freteEscolhido ? Number(freteEscolhido.preco) : 0
+  const totalFinal = total + freteValor
 
   return (
     <>
@@ -191,9 +253,48 @@ export default function LojaSacola() {
               <span>Subtotal ({qtdTotal} {qtdTotal === 1 ? 'item' : 'itens'})</span>
               <span>R$ {brl(total)}</span>
             </div>
+            <div style={{ margin: '10px 0 12px', padding: 12, border: '0.5px solid #eee', borderRadius: 8, background: '#fff' }}>
+              <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>Entrega</div>
+              <input value={cep} onChange={(e) => { const v = mascaraCep(e.target.value); setCep(v); if (soNum(v).length === 8) cotarFrete(v) }} inputMode="numeric" autoComplete="postal-code" placeholder="Digite seu CEP" style={CAMPO} />
+              {cotando && <div style={{ fontSize: 12, color: '#999', marginTop: 8 }}>Calculando frete...</div>}
+              {erroFrete && <div style={{ fontSize: 12, color: '#c0392b', marginTop: 8 }}>{erroFrete}</div>}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 10 }}>
+                <label style={opcaoEstilo(entregaSel === 'RETIRADA')}>
+                  <input type="radio" name="entrega" checked={entregaSel === 'RETIRADA'} onChange={() => setEntregaSel('RETIRADA')} />
+                  <span style={{ flex: 1 }}>Retirar na loja · São Pedro da Aldeia</span>
+                  <strong style={{ color: '#2f6249' }}>Grátis</strong>
+                </label>
+                {fretes.map((f) => (
+                  <label key={f.id} style={opcaoEstilo(entregaSel === String(f.id))}>
+                    <input type="radio" name="entrega" checked={entregaSel === String(f.id)} onChange={() => setEntregaSel(String(f.id))} />
+                    <span style={{ flex: 1 }}>{f.nome}{f.prazo ? ' · até ' + f.prazo + ' dias úteis' : ''}</span>
+                    <strong>R$ {brl(f.preco)}</strong>
+                  </label>
+                ))}
+              </div>
+              {(entregaSel === '' || entregaSel === 'RETIRADA') ? null : (
+                <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <div style={{ fontSize: 12, color: '#666' }}>Endereço de entrega</div>
+                  <input value={end.rua} onChange={(e) => mudarEnd('rua', e.target.value)} autoComplete="address-line1" placeholder="Rua / Avenida" style={CAMPO} />
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <input value={end.numero} onChange={(e) => mudarEnd('numero', e.target.value.slice(0, 10))} placeholder="Número" style={{ ...CAMPO, flex: 'none', width: 100 }} />
+                    <input value={end.complemento} onChange={(e) => mudarEnd('complemento', e.target.value)} autoComplete="address-line2" placeholder="Complemento (opcional)" style={CAMPO} />
+                  </div>
+                  <input value={end.bairro} onChange={(e) => mudarEnd('bairro', e.target.value)} placeholder="Bairro" style={CAMPO} />
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <input value={end.cidade} onChange={(e) => mudarEnd('cidade', e.target.value)} autoComplete="address-level2" placeholder="Cidade" style={CAMPO} />
+                    <input value={end.uf} onChange={(e) => mudarEnd('uf', e.target.value.toUpperCase().slice(0, 2))} autoComplete="address-level1" placeholder="UF" style={{ ...CAMPO, flex: 'none', width: 70 }} />
+                  </div>
+                </div>
+              )}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontSize: 13, color: '#666' }}>
+              <span>Frete</span>
+              <span>{entregaSel === '' ? 'informe o CEP' : (freteValor === 0 ? 'Grátis' : 'R$ ' + brl(freteValor))}</span>
+            </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14, fontSize: 16, fontWeight: 500, color: '#222' }}>
               <span>Total</span>
-              <span style={{ color: '#AA1B2F' }}>R$ {brl(total)}</span>
+              <span style={{ color: '#AA1B2F' }}>R$ {brl(totalFinal)}</span>
             </div>
             <div style={{ marginBottom: 12 }}>
               <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>Forma de pagamento</div>
@@ -208,7 +309,7 @@ export default function LojaSacola() {
                 <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>Parcelas</div>
                 <select value={parcelas} onChange={(e) => setParcelas(Number(e.target.value))} style={{ width: '100%', height: 44, padding: '0 10px', border: '0.5px solid #ccc', borderRadius: 8, fontSize: 16, background: '#fff', boxSizing: 'border-box' }}>
                   {[1, 2, 3].map((n) => (
-                    <option key={n} value={n}>{n === 1 ? '1x de R$ ' + brl(total) + ' à vista' : n + 'x de R$ ' + brl(total / n) + ' sem juros'}</option>
+                    <option key={n} value={n}>{n === 1 ? '1x de R$ ' + brl(totalFinal) + ' à vista' : n + 'x de R$ ' + brl(totalFinal / n) + ' sem juros'}</option>
                   ))}
                 </select>
                 <div style={{ fontSize: 12, color: '#555', margin: '12px 0 6px', textAlign: 'center' }}>Aceitamos todos os cartões</div>
@@ -246,7 +347,7 @@ export default function LojaSacola() {
               </div>
             )}
             {erro && <div style={{ color: '#c0392b', fontSize: 13, marginBottom: 10 }}>{erro}</div>}
-            <button onClick={finalizar} disabled={enviando} style={{ width: '100%', height: 48, background: '#AA1B2F', color: '#fff', border: 'none', borderRadius: 8, fontSize: 15, letterSpacing: 1, cursor: enviando ? 'default' : 'pointer', opacity: enviando ? 0.7 : 1 }}>{enviando ? (forma === 'CARTAO' ? 'Processando pagamento...' : 'Gerando pagamento...') : (forma === 'CARTAO' ? 'Pagar R$ ' + brl(total) : 'Finalizar pedido')}</button>
+            <button onClick={finalizar} disabled={enviando} style={{ width: '100%', height: 48, background: '#AA1B2F', color: '#fff', border: 'none', borderRadius: 8, fontSize: 15, letterSpacing: 1, cursor: enviando ? 'default' : 'pointer', opacity: enviando ? 0.7 : 1 }}>{enviando ? (forma === 'CARTAO' ? 'Processando pagamento...' : 'Gerando pagamento...') : (forma === 'CARTAO' ? 'Pagar R$ ' + brl(totalFinal) : 'Finalizar pedido')}</button>
           </div>
         </>
       )}

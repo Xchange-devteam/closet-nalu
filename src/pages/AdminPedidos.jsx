@@ -106,6 +106,14 @@ export default function AdminPedidos() {
                   <div style={{ borderTop: '0.5px solid #eee', marginTop: 10, paddingTop: 10, fontSize: 12, color: '#888' }}>
                     {p.email_cliente && <div>Email: {p.email_cliente}</div>}
                     {p.telefone_cliente && <div>Telefone: {p.telefone_cliente}</div>}
+                    {p.entrega_tipo === 'RETIRADA' && <div style={{ marginTop: 6 }}>Entrega: Retirada na loja</div>}
+                    {p.entrega_tipo === 'ENTREGA' && (
+                      <div style={{ marginTop: 6 }}>
+                        <div>Entrega: {p.frete_servico}{p.frete_prazo ? ' (até ' + p.frete_prazo + ' dias úteis)' : ''} · R$ {brl(p.frete_valor)}</div>
+                        <div>{p.entrega_rua}, {p.entrega_numero}{p.entrega_complemento ? ' - ' + p.entrega_complemento : ''}</div>
+                        <div>{p.entrega_bairro} · {p.entrega_cidade}/{p.entrega_uf} · CEP {p.entrega_cep}</div>
+                      </div>
+                    )}
                     {p.asaas_invoice_url && <div style={{ marginTop: 6 }}><a href={p.asaas_invoice_url} target="_blank" rel="noreferrer" style={{ color: '#AA1B2F' }}>Ver cobrança Asaas</a></div>}
                   </div>
                 </div>

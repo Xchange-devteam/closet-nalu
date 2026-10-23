@@ -46,6 +46,14 @@ const CEP_ORIGEM = Deno.env.get('CEP_ORIGEM') ?? '28941068';
 // Medidas padrao de cada peca embalada (cm e kg). Ajuste aqui se precisar.
 const PECA = { width: 20, height: 4, length: 28, weight: 0.4 };
 
+// Transportadoras em que a loja consegue postar (o resto nao aparece para o cliente)
+const TRANSPORTADORAS = ['correios', 'jadlog', 'loggi', 'jet', 'j&t'];
+function transportadoraPermitida(sv: any) {
+  const empresa = String(sv?.company?.name ?? '').toLowerCase();
+  const servico = String(sv?.name ?? '').toLowerCase();
+  return TRANSPORTADORAS.some((t) => empresa.includes(t)) && servico.includes('centralizado') === false;
+}
+
 async function cotarFrete(cepDestino: string, itens: any[]) {
   const ids = [...new Set(itens.map((i) => i?.produto_id).filter((x) => typeof x === 'string'))];
   const precos = new Map<string, number>();
@@ -89,7 +97,7 @@ async function cotarFrete(cepDestino: string, itens: any[]) {
     throw new Error('frete_indisponivel');
   }
   return data
-    .filter((sv: any) => sv && sv.error == null && (sv.price == null) === false)
+    .filter((sv: any) => sv && sv.error == null && (sv.price == null) === false && transportadoraPermitida(sv))
     .map((sv: any) => ({
       id: Number(sv.id),
       nome: `${sv.company?.name ?? ''} ${sv.name ?? ''}`.trim(),

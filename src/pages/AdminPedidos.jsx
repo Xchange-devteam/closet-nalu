@@ -109,7 +109,7 @@ export default function AdminPedidos() {
                     {p.entrega_tipo === 'RETIRADA' && <div style={{ marginTop: 6 }}>Entrega: Retirada na loja</div>}
                     {p.entrega_tipo === 'ENTREGA' && (
                       <div style={{ marginTop: 6 }}>
-                        <div>Entrega: {p.frete_servico}{p.frete_prazo ? ' (até ' + p.frete_prazo + ' dias úteis)' : ''} · R$ {brl(p.frete_valor)}</div>
+                        <div>Entrega: {String(p.frete_servico || '').replace(/^(\S+) \1 /, '$1 ')}{p.frete_prazo ? ' (até ' + p.frete_prazo + ' dias úteis)' : ''} · R$ {brl(p.frete_valor)}</div>
                         <div>{p.entrega_rua}, {p.entrega_numero}{p.entrega_complemento ? ' - ' + p.entrega_complemento : ''}</div>
                         <div>{p.entrega_bairro} · {p.entrega_cidade}/{p.entrega_uf} · CEP {p.entrega_cep}</div>
                       </div>

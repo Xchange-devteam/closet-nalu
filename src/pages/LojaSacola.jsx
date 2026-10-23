@@ -267,7 +267,7 @@ export default function LojaSacola() {
                 {fretes.map((f) => (
                   <label key={f.id} style={opcaoEstilo(entregaSel === String(f.id))}>
                     <input type="radio" name="entrega" checked={entregaSel === String(f.id)} onChange={() => setEntregaSel(String(f.id))} />
-                    <span style={{ flex: 1 }}>{f.nome}{f.prazo ? ' · até ' + f.prazo + ' dias úteis' : ''}</span>
+                    <span style={{ flex: 1 }}>{f.nome.replace(/^(\S+) \1 /, '$1 ')}{f.prazo ? ' · até ' + f.prazo + ' dias úteis' : ''}</span>
                     <strong>R$ {brl(f.preco)}</strong>
                   </label>
                 ))}
@@ -290,7 +290,7 @@ export default function LojaSacola() {
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontSize: 13, color: '#666' }}>
               <span>Frete</span>
-              <span>{entregaSel === '' ? 'informe o CEP' : (freteValor === 0 ? 'Grátis' : 'R$ ' + brl(freteValor))}</span>
+              <span>{entregaSel === '' ? (fretes.length > 0 ? 'escolha a entrega' : 'informe o CEP') : (freteValor === 0 ? 'Grátis' : 'R$ ' + brl(freteValor))}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14, fontSize: 16, fontWeight: 500, color: '#222' }}>
               <span>Total</span>

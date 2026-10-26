@@ -212,7 +212,9 @@ export default function LojaSacola() {
   const brl = (v) => Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   const freteEscolhido = fretes.find((f) => String(f.id) === entregaSel)
   const freteValor = freteEscolhido ? Number(freteEscolhido.preco) : 0
-  const totalFinal = total + freteValor
+  // Desconto de 5% no Pix, so sobre os produtos (mesma conta do servidor)
+  const descontoPix = forma === 'PIX' ? Math.round(total * 0.05 * 100) / 100 : 0
+  const totalFinal = Math.round((total - descontoPix + freteValor) * 100) / 100
 
   return (
     <>
@@ -292,6 +294,12 @@ export default function LojaSacola() {
               <span>Frete</span>
               <span>{entregaSel === '' ? (fretes.length > 0 ? 'escolha a entrega' : 'informe o CEP') : (freteValor === 0 ? 'Grátis' : 'R$ ' + brl(freteValor))}</span>
             </div>
+            {descontoPix > 0 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontSize: 13, color: '#1a7f37' }}>
+                <span>Desconto Pix (5%)</span>
+                <span>- R$ {brl(descontoPix)}</span>
+              </div>
+            )}
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14, fontSize: 16, fontWeight: 500, color: '#222' }}>
               <span>Total</span>
               <span style={{ color: '#AA1B2F' }}>R$ {brl(totalFinal)}</span>
@@ -300,7 +308,7 @@ export default function LojaSacola() {
               <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>Forma de pagamento</div>
               <div style={{ display: 'flex', gap: 8 }}>
                 {OPCOES_PAGAMENTO.map(([valor, rotulo]) => (
-                  <span key={valor} onClick={() => setForma(valor)} style={{ flex: 1, textAlign: 'center', padding: '10px 0', borderRadius: 8, cursor: 'pointer', fontSize: 14, border: '1px solid ' + (forma === valor ? '#AA1B2F' : '#ddd'), color: forma === valor ? '#AA1B2F' : '#666', background: forma === valor ? '#fdf2f3' : '#fff', fontWeight: forma === valor ? 600 : 400 }}>{rotulo}</span>
+                  <span key={valor} onClick={() => setForma(valor)} style={{ flex: 1, textAlign: 'center', padding: '10px 0', borderRadius: 8, cursor: 'pointer', fontSize: 14, border: '1px solid ' + (forma === valor ? '#AA1B2F' : '#ddd'), color: forma === valor ? '#AA1B2F' : '#666', background: forma === valor ? '#fdf2f3' : '#fff', fontWeight: forma === valor ? 600 : 400 }}>{rotulo}{valor === 'PIX' ? ' -5%' : ''}</span>
                 ))}
               </div>
             </div>

@@ -311,7 +311,9 @@ Deno.serve(async (req) => {
       if (escolhido === undefined) return json({ error: 'frete_invalido' }, 400);
       frete = { valor: escolhido.preco, nome: escolhido.nome, id: escolhido.id, prazo: escolhido.prazo };
     }
-    const total = Math.round((subtotal + frete.valor) * 100) / 100;
+    // Desconto de 5% no Pix, so sobre os produtos (frete cheio)
+    const desconto = forma === 'PIX' ? Math.round(subtotal * 0.05 * 100) / 100 : 0;
+    const total = Math.round((subtotal - desconto + frete.valor) * 100) / 100;
     if (total < 5) return json({ error: 'valor_minimo', minimo: 5 }, 400);
 
     // 5. Cliente no Asaas (cria uma vez, reusa depois)
@@ -337,6 +339,7 @@ Deno.serve(async (req) => {
         telefone_cliente: telefone || null,
         total,
         subtotal,
+        desconto,
         frete_valor: frete.valor,
         frete_servico: frete.nome,
         frete_servico_id: frete.id,

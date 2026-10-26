@@ -107,6 +107,7 @@ export default function AdminPedidos() {
                     {p.email_cliente && <div>Email: {p.email_cliente}</div>}
                     {p.telefone_cliente && <div>Telefone: {p.telefone_cliente}</div>}
                     {p.entrega_tipo === 'RETIRADA' && <div style={{ marginTop: 6 }}>Entrega: Retirada na loja</div>}
+                    {Number(p.desconto) > 0 && <div style={{ marginTop: 6, color: '#1a7f37' }}>Desconto Pix: - R$ {brl(p.desconto)}</div>}
                     {p.entrega_tipo === 'ENTREGA' && (
                       <div style={{ marginTop: 6 }}>
                         <div>Entrega: {String(p.frete_servico || '').replace(/^(\S+) \1 /, '$1 ')}{p.frete_prazo ? ' (até ' + p.frete_prazo + ' dias úteis)' : ''} · R$ {brl(p.frete_valor)}</div>

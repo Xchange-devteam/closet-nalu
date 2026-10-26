@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase'
 import BarraNav from '../components/BarraNav'
 import Cabecalho from '../components/Cabecalho'
 
-const CAMPOS = 'id, total, status, forma_pagamento, pix_qrcode, pix_copia_cola, pix_expira_em, boleto_linha, boleto_url, asaas_invoice_url'
+const CAMPOS = 'id, total, desconto, status, forma_pagamento, pix_qrcode, pix_copia_cola, pix_expira_em, boleto_linha, boleto_url, asaas_invoice_url'
 
 // Linha digitavel no formato do boleto impresso: 00000.00000 00000.000000 00000.000000 0 00000000000000
 function formatarLinha(linha) {
@@ -81,6 +81,9 @@ export default function LojaPagamento() {
         <div style={{ textAlign: 'center', marginBottom: 16 }}>
           <div style={{ fontSize: 12, color: '#999' }}>Pedido #{numero}</div>
           <div style={{ fontFamily: 'Georgia, serif', fontSize: 26, color: '#AA1B2F', marginTop: 4 }}>R$ {brl(pedido.total)}</div>
+          {Number(pedido.desconto) > 0 && (
+            <div style={{ fontSize: 12, color: '#1a7f37', marginTop: 4 }}>Inclui desconto Pix de R$ {brl(pedido.desconto)}</div>
+          )}
         </div>
 
         {temPix && (

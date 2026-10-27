@@ -31,6 +31,9 @@ export default function AdminProdutos() {
   const [desconto, setDesconto] = useState('0')
   const [parcelas, setParcelas] = useState('1')
   const [tamanhos, setTamanhos] = useState('P, M, G')
+  const [cores, setCores] = useState([])
+  const [novaCor, setNovaCor] = useState('')
+  const [estoque, setEstoque] = useState({})
   const [descricao, setDescricao] = useState('')
   const [fotos, setFotos] = useState([])
 
@@ -44,7 +47,7 @@ export default function AdminProdutos() {
 
     const { data: prods } = await supabase
       .from('produtos')
-      .select('id, nome, subcategoria_id, parcelas, tamanhos, descricao, preco_base, percentual_desconto, preco_promocional, produto_fotos(url, ordem)')
+      .select('id, nome, subcategoria_id, parcelas, tamanhos, descricao, produto_variantes(tamanho, cor, estoque), preco_base, percentual_desconto, preco_promocional, produto_fotos(url, ordem)')
       .order('criado_em', { ascending: false })
     setPecas(prods || [])
 
@@ -88,6 +91,22 @@ export default function AdminProdutos() {
     } else {
       setTamanhos([...arr, t].join(', '))
     }
+  }
+
+  const CORES_PADRAO = ['Preto', 'Branco', 'Off White', 'Bege', 'Nude', 'Marrom', 'Rosa', 'Vermelho', 'Vinho', 'Azul', 'Azul Marinho', 'Verde', 'Verde Militar', 'Verde Bandeira', 'Amarelo', 'Estampado']
+
+  function toggleCor(c) {
+    setCores(cores.includes(c) ? cores.filter(x => x !== c) : [...cores, c])
+  }
+
+  function adicionarCor() {
+    const c = novaCor.trim()
+    if (c && !cores.includes(c)) setCores([...cores, c])
+    setNovaCor('')
+  }
+
+  function mudarEstoque(t, c, v) {
+    setEstoque({ ...estoque, [t + '|' + c]: v.replace(/\D/g, '') })
   }
 
   async function salvar() {
@@ -146,7 +165,22 @@ export default function AdminProdutos() {
       await supabase.from('produto_fotos').insert(registros)
     }
 
-    setNome(''); setSubId(''); setPrecoBase(''); setDesconto('0'); setParcelas('1'); setTamanhos('P, M, G'); setDescricao('')
+    // Variantes: estoque por tamanho x cor (refeitas a cada salvamento)
+    const { error: delVarErr } = await supabase.from('produto_variantes').delete().eq('produto_id', prodId)
+    if (delVarErr) { alert('Erro ao salvar estoque: ' + delVarErr.message); setSalvando(false); return }
+    const tams = arrTamanhos()
+    if (cores.length > 0 && tams.length > 0) {
+      const variantes = []
+      for (const c of cores) {
+        for (const t of tams) {
+          variantes.push({ produto_id: prodId, tamanho: t, cor: c, estoque: Math.max(0, parseInt(estoque[t + '|' + c]) || 0) })
+        }
+      }
+      const { error: varErr } = await supabase.from('produto_variantes').insert(variantes)
+      if (varErr) { alert('Erro ao salvar estoque: ' + varErr.message); setSalvando(false); return }
+    }
+
+    setNome(''); setSubId(''); setPrecoBase(''); setDesconto('0'); setParcelas('1'); setTamanhos('P, M, G'); setDescricao(''); setCores([]); setEstoque({}); setNovaCor('')
     setFotos([])
     setEditandoId(null)
     setSalvando(false)
@@ -162,6 +196,13 @@ export default function AdminProdutos() {
     setDesconto(String(p.percentual_desconto))
     setParcelas(String(p.parcelas || 1))
     setTamanhos((p.tamanhos || []).join(', '))
+    const coresP = []
+    const est = {}
+    for (const v of (p.produto_variantes || [])) {
+      if (!coresP.includes(v.cor)) coresP.push(v.cor)
+      est[v.tamanho + '|' + v.cor] = String(v.estoque)
+    }
+    setCores(coresP); setEstoque(est); setNovaCor('')
     setDescricao(p.descricao || '')
     setFotos([])
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -169,7 +210,7 @@ export default function AdminProdutos() {
 
   function cancelarEdicao() {
     setEditandoId(null)
-    setNome(''); setSubId(''); setPrecoBase(''); setDesconto('0'); setParcelas('1'); setTamanhos('P, M, G'); setDescricao('')
+    setNome(''); setSubId(''); setPrecoBase(''); setDesconto('0'); setParcelas('1'); setTamanhos('P, M, G'); setDescricao(''); setCores([]); setEstoque({}); setNovaCor('')
     setFotos([])
   }
 
@@ -257,6 +298,41 @@ export default function AdminProdutos() {
               })}
             </div>
           </div>
+
+          <div style={{ marginBottom: 12 }}>
+            <label style={{ fontSize: 11, color: '#888' }}>Cores (toque para selecionar)</label>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 6 }}>
+              {[...CORES_PADRAO, ...cores.filter(c => !CORES_PADRAO.includes(c))].map((c) => {
+                const ativo = cores.includes(c)
+                return (
+                  <button key={c} type="button" onClick={() => toggleCor(c)} style={{ fontSize: 12, padding: '6px 10px', border: '0.5px solid ' + (ativo ? '#AA1B2F' : '#ccc'), borderRadius: 8, background: ativo ? '#AA1B2F' : '#fff', color: ativo ? '#fff' : '#666', cursor: 'pointer', fontWeight: ativo ? 600 : 400 }}>{c}</button>
+                )
+              })}
+            </div>
+            <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+              <input value={novaCor} onChange={(e) => setNovaCor(e.target.value)} placeholder="Outra cor" style={{ flex: 1, height: 32, border: '0.5px solid #ddd', borderRadius: 6, padding: '0 10px', fontSize: 13, boxSizing: 'border-box' }} />
+              <button type="button" onClick={adicionarCor} style={{ height: 32, padding: '0 12px', border: '0.5px solid #AA1B2F', borderRadius: 6, background: '#fff', color: '#AA1B2F', fontSize: 12, cursor: 'pointer' }}>Adicionar</button>
+            </div>
+          </div>
+
+          {cores.length > 0 && arrTamanhos().length > 0 && (
+            <div style={{ marginBottom: 12 }}>
+              <label style={{ fontSize: 11, color: '#888' }}>Estoque por tamanho e cor</label>
+              {cores.map((c) => (
+                <div key={c} style={{ marginTop: 8 }}>
+                  <div style={{ fontSize: 12, color: '#333', marginBottom: 4 }}>{c}</div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {arrTamanhos().map((t) => (
+                      <label key={t} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#888' }}>
+                        {t}
+                        <input inputMode="numeric" value={estoque[t + '|' + c] ?? ''} onChange={(e) => mudarEstoque(t, c, e.target.value)} placeholder="0" style={{ width: 44, height: 30, border: '0.5px solid #ddd', borderRadius: 6, textAlign: 'center', fontSize: 13 }} />
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
           <div style={{ background: '#f9f3f0', borderRadius: 8, padding: '10px 12px', marginBottom: 12, fontSize: 12, color: '#AA1B2F' }}>
             Preço final calculado: <b>R$ {brl(precoFinal)}</b>{pct > 0 && <> &nbsp;·&nbsp; selo <b>-{pct}%</b></>}

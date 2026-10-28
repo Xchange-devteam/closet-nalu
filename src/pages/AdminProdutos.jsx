@@ -1,3 +1,4 @@
+import { corFundo } from '../lib/cores'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
@@ -305,7 +306,7 @@ export default function AdminProdutos() {
               {[...CORES_PADRAO, ...cores.filter(c => !CORES_PADRAO.includes(c))].map((c) => {
                 const ativo = cores.includes(c)
                 return (
-                  <button key={c} type="button" onClick={() => toggleCor(c)} style={{ fontSize: 12, padding: '6px 10px', border: '0.5px solid ' + (ativo ? '#AA1B2F' : '#ccc'), borderRadius: 8, background: ativo ? '#AA1B2F' : '#fff', color: ativo ? '#fff' : '#666', cursor: 'pointer', fontWeight: ativo ? 600 : 400 }}>{c}</button>
+                  <button key={c} type="button" onClick={() => toggleCor(c)} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, padding: '6px 10px', border: '0.5px solid ' + (ativo ? '#AA1B2F' : '#ccc'), borderRadius: 8, background: ativo ? '#AA1B2F' : '#fff', color: ativo ? '#fff' : '#666', cursor: 'pointer', fontWeight: ativo ? 600 : 400 }}><span style={{ width: 14, height: 14, borderRadius: '50%', border: '1px solid rgba(0,0,0,0.2)', background: corFundo(c), flexShrink: 0 }} />{c}</button>
                 )
               })}
             </div>
@@ -320,7 +321,7 @@ export default function AdminProdutos() {
               <label style={{ fontSize: 11, color: '#888' }}>Estoque por tamanho e cor</label>
               {cores.map((c) => (
                 <div key={c} style={{ marginTop: 8 }}>
-                  <div style={{ fontSize: 12, color: '#333', marginBottom: 4 }}>{c}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#333', marginBottom: 4 }}><span style={{ width: 12, height: 12, borderRadius: '50%', border: '1px solid rgba(0,0,0,0.2)', background: corFundo(c) }} />{c}</div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                     {arrTamanhos().map((t) => (
                       <label key={t} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#888' }}>

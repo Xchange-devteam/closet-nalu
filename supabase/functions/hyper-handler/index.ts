@@ -62,6 +62,19 @@ Deno.serve(async (req) => {
 
     if (error) console.error('Erro ao atualizar pedido:', error);
     else console.log(`${evento.event} → ${pagamento.id}:`, JSON.stringify(data));
+
+    // Pagamento confirmado: baixa o estoque (a funcao so roda uma vez por pedido)
+    if (regra.novo === 'pago') {
+      const { data: pagos } = await admin
+        .from('pedidos')
+        .select('id')
+        .eq('asaas_payment_id', pagamento.id)
+        .eq('status', 'pago');
+      for (const ped of pagos ?? []) {
+        const { error: estErr } = await admin.rpc('baixar_estoque', { p_pedido: ped.id });
+        if (estErr) console.error('Erro ao baixar estoque:', estErr);
+      }
+    }
   } catch (e) {
     console.error('Webhook inválido:', e);
   }

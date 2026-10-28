@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useSacola } from '../lib/sacola'
 import { useFavoritos } from '../lib/favoritos'
+import { corFundo } from '../lib/cores'
 import Cabecalho from '../components/Cabecalho'
 import BarraNav from '../components/BarraNav'
 
@@ -14,6 +15,7 @@ export default function LojaDetalhe() {
   const [fotos, setFotos] = useState([])
   const [idx, setIdx] = useState(0)
   const [tamanho, setTamanho] = useState(null)
+  const [cor, setCor] = useState(null)
   const [carregando, setCarregando] = useState(true)
   const navigate = useNavigate()
   const { adicionar } = useSacola()
@@ -24,7 +26,7 @@ export default function LojaDetalhe() {
   async function carregar() {
     const { data } = await supabase
       .from('produtos')
-      .select('id, nome, descricao, tamanhos, preco_base, percentual_desconto, preco_promocional, parcelas, produto_fotos(url, ordem)')
+      .select('id, nome, descricao, tamanhos, preco_base, percentual_desconto, preco_promocional, parcelas, produto_fotos(url, ordem), produto_variantes(tamanho, cor, estoque)')
       .eq('id', id)
       .single()
     if (data) {
@@ -36,19 +38,36 @@ export default function LojaDetalhe() {
 
   const brl = (v) => Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   const temTamanho = peca?.tamanhos && peca.tamanhos.length > 0
-  const podeComprar = !temTamanho || tamanho
+  // Variantes (tamanho x cor com estoque). Peca sem variantes funciona como antes.
+  const variantes = peca?.produto_variantes || []
+  const temCor = variantes.length > 0
+  const cores = [...new Set(variantes.map((v) => v.cor))]
+  const estoqueDe = (t, c) => {
+    const v = variantes.find((x) => x.tamanho === t && x.cor === c)
+    return v ? v.estoque : 0
+  }
+  const tamDisponivel = (t) => !temCor || variantes.some((v) => v.tamanho === t && v.estoque > 0)
+  const corDisponivel = (c) => variantes.some((v) => v.cor === c && v.estoque > 0 && (!tamanho || v.tamanho === tamanho))
+  const semEstoque = temCor && !variantes.some((v) => v.estoque > 0)
+  const podeComprar = !semEstoque && (!temTamanho || tamanho) && (!temCor || (cor && estoqueDe(tamanho, cor) > 0))
+
+  function escolherTamanho(t) {
+    if (!tamDisponivel(t)) return
+    setTamanho(t)
+    if (cor && estoqueDe(t, cor) <= 0) setCor(null)
+  }
 
   const [adicionado, setAdicionado] = useState(false)
 
   function adicionarSacola() {
     if (!podeComprar) return
-    adicionar(peca, tamanho)
+    adicionar(peca, tamanho, cor)
     setAdicionado(true)
     setTimeout(() => setAdicionado(false), 2000)
   }
 
   function comprarWhats() {
-    const msg = `Olá! Tenho interesse na peça: ${peca.nome}${tamanho ? ' (tam ' + tamanho + ')' : ''} - R$ ${brl(peca.preco_promocional)}`
+    const msg = `Olá! Tenho interesse na peça: ${peca.nome}${tamanho ? ' (tam ' + tamanho + ')' : ''}${cor ? ' (cor ' + cor + ')' : ''} - R$ ${brl(peca.preco_promocional)}`
     window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank')
   }
 
@@ -107,14 +126,31 @@ export default function LojaDetalhe() {
             <div style={{ fontSize: 13, fontWeight: 500, color: '#333', marginBottom: 8 }}>Tamanho</div>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               {peca.tamanhos.map((t) => (
-                <span key={t} onClick={() => setTamanho(t)} style={{ minWidth: 44, height: 44, padding: '0 8px', border: tamanho === t ? '1.5px solid #AA1B2F' : '0.5px solid #ccc', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: tamanho === t ? '#AA1B2F' : '#333', fontWeight: tamanho === t ? 500 : 400, cursor: 'pointer' }}>{t}</span>
+                <span key={t} onClick={() => escolherTamanho(t)} style={{ textDecoration: tamDisponivel(t) ? 'none' : 'line-through', opacity: tamDisponivel(t) ? 1 : 0.4, minWidth: 44, height: 44, padding: '0 8px', border: tamanho === t ? '1.5px solid #AA1B2F' : '0.5px solid #ccc', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: tamanho === t ? '#AA1B2F' : '#333', fontWeight: tamanho === t ? 500 : 400, cursor: tamDisponivel(t) ? 'pointer' : 'not-allowed' }}>{t}</span>
               ))}
             </div>
           </div>
         )}
 
+        {temCor && (
+          <div style={{ marginBottom: 22 }}>
+            <div style={{ fontSize: 13, fontWeight: 500, color: '#333', marginBottom: 8 }}>Cor{cor ? ': ' + cor : ''}</div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {cores.map((c) => {
+                const ok = corDisponivel(c)
+                const sel = cor === c
+                return (
+                  <span key={c} onClick={() => ok && setCor(c)} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 36, padding: '0 12px', border: sel ? '1.5px solid #AA1B2F' : '0.5px solid #ccc', borderRadius: 18, fontSize: 13, color: ok ? (sel ? '#AA1B2F' : '#333') : '#bbb', textDecoration: ok ? 'none' : 'line-through', cursor: ok ? 'pointer' : 'not-allowed', fontWeight: sel ? 500 : 400 }}>
+                    <span style={{ width: 14, height: 14, borderRadius: '50%', border: '1px solid rgba(0,0,0,0.2)', background: corFundo(c), opacity: ok ? 1 : 0.4 }} />{c}
+                  </span>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
         <button onClick={adicionarSacola} disabled={!podeComprar} style={{ width: '100%', height: 48, background: podeComprar ? '#AA1B2F' : '#ccc', color: '#fff', border: 'none', borderRadius: 8, fontSize: 15, letterSpacing: 1, marginBottom: 10, cursor: podeComprar ? 'pointer' : 'not-allowed' }}>
-          {temTamanho && !tamanho ? 'Escolha um tamanho' : (adicionado ? '✓ Adicionado!' : 'Adicionar à sacola')}
+          {semEstoque ? 'Sem estoque' : temTamanho && !tamanho ? 'Escolha um tamanho' : temCor && !cor ? 'Escolha uma cor' : (adicionado ? '✓ Adicionado!' : 'Adicionar à sacola')}
         </button>
         <button onClick={comprarWhats} style={{ width: '100%', height: 46, background: '#fff', color: '#25D366', border: '1px solid #25D366', borderRadius: 8, fontSize: 14, cursor: 'pointer' }}>
           Comprar pelo WhatsApp

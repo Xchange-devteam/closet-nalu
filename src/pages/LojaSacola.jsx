@@ -114,6 +114,7 @@ export default function LojaSacola() {
     cpf_invalido: 'CPF inválido. Confira os números.',
     produto_indisponivel: 'Um dos produtos da sacola não está mais disponível.',
     tamanho_invalido: 'Um dos tamanhos escolhidos não está mais disponível.',
+    sem_estoque: 'Uma das peças acabou de esgotar nesse tamanho e cor. Remova da sacola e escolha outra opção.',
     valor_minimo: 'O valor mínimo para pagamento é R$ 5,00.',
     nao_autenticado: 'Sua sessão expirou. Entre novamente.',
     cartao_incompleto: 'Confira os dados do cartão e do titular.',
@@ -181,7 +182,7 @@ export default function LojaSacola() {
       }
       const { data: res, error } = await supabase.functions.invoke('swift-responder', {
         body: {
-          itens: itens.map((i) => ({ produto_id: i.id, quantidade: i.quantidade, tamanho: i.tamanho })),
+          itens: itens.map((i) => ({ produto_id: i.id, quantidade: i.quantidade, tamanho: i.tamanho, cor: i.cor || null })),
           cpf: pedirCpf ? cpfDigitos : undefined,
           forma,
           parcelas: forma === 'CARTAO' ? parcelas : undefined,
@@ -238,6 +239,7 @@ export default function LojaSacola() {
                 <div style={{ flex: 1 }}>
                   <div style={{ fontFamily: 'Georgia, serif', fontSize: 14 }}>{i.nome}</div>
                   {i.tamanho && <div style={{ fontSize: 11, color: '#999', margin: '2px 0' }}>Tamanho: {i.tamanho}</div>}
+                  {i.cor && <div style={{ fontSize: 11, color: '#999', margin: '2px 0' }}>Cor: {i.cor}</div>}
                   <div style={{ fontSize: 14, fontWeight: 500, color: '#AA1B2F' }}>R$ {brl(i.preco)}</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 8 }}>
                     <span onClick={() => mudarQtd(i.chave, -1)} style={{ width: 26, height: 26, border: '0.5px solid #ccc', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>−</span>

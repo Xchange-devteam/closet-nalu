@@ -21,9 +21,9 @@ export function SacolaProvider({ children }) {
     } catch (e) { /* ignora */ }
   }, [itens])
 
-  function adicionar(peca, tamanho) {
+  function adicionar(peca, tamanho, cor) {
     setItens((prev) => {
-      const chave = peca.id + '_' + (tamanho || '')
+      const chave = peca.id + '_' + (tamanho || '') + '_' + (cor || '')
       const existe = prev.find((i) => i.chave === chave)
       if (existe) {
         return prev.map((i) => i.chave === chave ? { ...i, quantidade: i.quantidade + 1 } : i)
@@ -35,6 +35,7 @@ export function SacolaProvider({ children }) {
         preco: peca.preco_promocional,
         foto: peca.produto_fotos?.sort((a, b) => a.ordem - b.ordem)[0]?.url || null,
         tamanho: tamanho || null,
+        cor: cor || null,
         quantidade: 1,
       }]
     })

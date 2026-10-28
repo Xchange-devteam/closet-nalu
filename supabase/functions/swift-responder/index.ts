@@ -248,13 +248,14 @@ Deno.serve(async (req) => {
     const ids = [...new Set(itens.map((i) => i.produto_id))];
     const { data: produtos, error: prodErr } = await admin
       .from('produtos')
-      .select('id, nome, preco_base, preco_promocional, em_promocao, ativo, tamanhos')
+      .select('id, nome, preco_base, preco_promocional, em_promocao, ativo, tamanhos, produto_variantes(tamanho, cor, estoque)')
       .in('id', ids);
     if (prodErr) throw prodErr;
     const mapa = new Map<string, any>((produtos ?? []).map((p: any) => [p.id, p]));
 
     let totalCentavos = 0;
     const linhas: any[] = [];
+    const qtdPorVariante = new Map<string, number>();
     for (const it of itens) {
       const p = mapa.get(it.produto_id);
       if (!p || !p.ativo) {
@@ -263,6 +264,19 @@ Deno.serve(async (req) => {
       const tamanho = it.tamanho ? String(it.tamanho) : null;
       if (tamanho && Array.isArray(p.tamanhos) && p.tamanhos.length && !p.tamanhos.includes(tamanho)) {
         return json({ error: 'tamanho_invalido', produto_id: p.id }, 400);
+      }
+      // Cor e estoque (so para pecas com variantes cadastradas)
+      const variantes: any[] = Array.isArray(p.produto_variantes) ? p.produto_variantes : [];
+      let cor: string | null = null;
+      if (variantes.length > 0) {
+        cor = it.cor ? String(it.cor) : null;
+        const v = variantes.find((x: any) => x.tamanho === tamanho && x.cor === cor);
+        const chaveVar = p.id + '|' + tamanho + '|' + cor;
+        const jaPedido = (qtdPorVariante.get(chaveVar) ?? 0) + Number(it.quantidade);
+        if (!v || Number(v.estoque) < jaPedido) {
+          return json({ error: 'sem_estoque', produto_id: p.id }, 400);
+        }
+        qtdPorVariante.set(chaveVar, jaPedido);
       }
       const preco =
         p.em_promocao && p.preco_promocional != null
@@ -277,6 +291,7 @@ Deno.serve(async (req) => {
         preco_unit: centavos / 100,
         quantidade: qtd,
         tamanho,
+        cor,
       });
     }
     const subtotal = totalCentavos / 100;

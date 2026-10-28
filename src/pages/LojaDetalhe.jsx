@@ -80,7 +80,7 @@ export default function LojaDetalhe() {
           <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 18 }}>
             {fotos.map((f, k) => (
               <div key={k} onClick={() => setIdx(k)} style={{ width: 44, height: 58, borderRadius: 5, overflow: 'hidden', border: k === idx ? '1.5px solid #AA1B2F' : '0.5px solid #ddd', cursor: 'pointer' }}>
-                <img src={f.url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <img src={f.url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} />
               </div>
             ))}
           </div>

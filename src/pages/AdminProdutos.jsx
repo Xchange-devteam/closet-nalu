@@ -357,7 +357,7 @@ export default function AdminProdutos() {
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 13 }}>{p.nome}</div>
                   <div style={{ fontSize: 11, color: '#999' }}>
-                    <span style={{ textDecoration: 'line-through' }}>{brl(p.preco_base)}</span> → R$ {brl(p.preco_promocional)} · -{p.percentual_desconto}%
+                    {p.percentual_desconto > 0 ? <><span style={{ textDecoration: 'line-through' }}>{brl(p.preco_base)}</span> → R$ {brl(p.preco_promocional)} · -{p.percentual_desconto}%</> : <>R$ {brl(p.preco_promocional)}</>}
                   </div>
                 </div>
                 <span onClick={() => editar(p)} style={{ cursor: 'pointer', fontSize: 17, padding: '0 4px' }} title="Editar">✏️</span>

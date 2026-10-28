@@ -66,7 +66,7 @@ export default function LojaListagem() {
                   )}
                   <span onClick={(e) => { e.stopPropagation(); alternar(p.id) }} style={{ position: 'absolute', top: 8, right: 8, fontSize: 20, color: ehFavorito(p.id) ? '#e74c3c' : '#fff', zIndex: 2, cursor: 'pointer' }}>{ehFavorito(p.id) ? '♥' : '♡'}</span>
                   <div style={{ aspectRatio: '3 / 4', background: '#f3f3f3', borderRadius: 4, overflow: 'hidden' }}>
-                    {capa && <img src={capa} alt={p.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                    {capa && <img src={capa} alt={p.nome} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} />}
                   </div>
                 </div>
                 <div style={{ fontFamily: 'Georgia, serif', fontSize: 13, marginTop: 6, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.nome}</div>

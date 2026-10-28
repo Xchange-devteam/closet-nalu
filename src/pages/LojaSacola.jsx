@@ -233,7 +233,7 @@ export default function LojaSacola() {
             {itens.map((i) => (
               <div key={i.chave} style={{ display: 'flex', gap: 12, padding: '12px 0', borderBottom: '0.5px solid #f1f1f1' }}>
                 <div style={{ width: 64, height: 80, borderRadius: 6, background: '#eee', flexShrink: 0, overflow: 'hidden' }}>
-                  {i.foto && <img src={i.foto} alt={i.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                  {i.foto && <img src={i.foto} alt={i.nome} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} />}
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontFamily: 'Georgia, serif', fontSize: 14 }}>{i.nome}</div>

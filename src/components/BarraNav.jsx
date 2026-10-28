@@ -17,6 +17,13 @@ const ITENS = [
   { key: 'perfil', lbl: 'Perfil', rota: '/perfil' },
 ]
 
+const CSS_BARRA = `
+@media (min-width: 900px) {
+  .cn-barra { top: 14px !important; bottom: auto !important; left: auto !important; right: 20px !important; max-width: none !important; margin: 0 !important; padding: 6px 10px !important; gap: 4px; border-top: none !important; border-radius: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.18); }
+  .cn-barra-item { flex: none !important; flex-direction: row !important; gap: 6px !important; font-size: 12px !important; padding: 6px 10px; }
+}
+`
+
 export default function BarraNav() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -25,12 +32,14 @@ export default function BarraNav() {
   const INATIVO = '#999'
 
   return (
-    <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50, display: 'flex', justifyContent: 'space-around', alignItems: 'center', padding: '8px 0 10px', borderTop: '0.5px solid #eee', background: '#fff', fontFamily: 'Arial, sans-serif', maxWidth: 720, marginLeft: 'auto', marginRight: 'auto' }}>
+    <>
+    <style>{CSS_BARRA}</style>
+    <div className="cn-barra" style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50, display: 'flex', justifyContent: 'space-around', alignItems: 'center', padding: '8px 0 10px', borderTop: '0.5px solid #eee', background: '#fff', fontFamily: 'Arial, sans-serif', maxWidth: 720, marginLeft: 'auto', marginRight: 'auto' }}>
       {ITENS.map(({ key, lbl, rota }) => {
         const ativo = location.pathname === rota
         const cor = ativo ? ATIVO : INATIVO
         return (
-          <div key={key} onClick={() => navigate(rota)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, fontSize: 10.5, color: cor, cursor: 'pointer', position: 'relative', flex: 1 }}>
+          <div key={key} className="cn-barra-item" onClick={() => navigate(rota)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, fontSize: 10.5, color: cor, cursor: 'pointer', position: 'relative', flex: 1 }}>
             <span style={{ position: 'relative', display: 'flex' }}>
               <svg width="24" height="24" viewBox="0 0 24 24">{ICONES[key](cor)}</svg>
               {key === 'sacola' && qtdTotal > 0 && (
@@ -42,5 +51,6 @@ export default function BarraNav() {
         )
       })}
     </div>
+    </>
   )
 }

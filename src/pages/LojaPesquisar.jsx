@@ -54,7 +54,7 @@ export default function LojaPesquisar() {
             return (
               <div key={p.id} onClick={() => navigate('/detalhe/' + p.id)} style={{ cursor: 'pointer' }}>
                 <div style={{ aspectRatio: '3 / 4', background: '#f3f3f3', borderRadius: 4, overflow: 'hidden' }}>
-                  {capa && <img src={capa} alt={p.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                  {capa && <img src={capa} alt={p.nome} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} />}
                 </div>
                 <div style={{ fontFamily: 'Georgia, serif', fontSize: 13, marginTop: 6 }}>{p.nome}</div>
                 <div style={{ fontSize: 14, fontWeight: 500, color: '#222' }}>R$ {brl(p.preco_promocional)}</div>

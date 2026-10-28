@@ -72,8 +72,8 @@ export default function Home() {
         {pecas.map((p) => {
           const foto = p.produto_fotos?.sort((a, b) => a.ordem - b.ordem)[0]?.url
           return (
-            <section className="cn-peca" key={p.id} style={{ position: 'relative', background: '#000' }}>
-              {foto && <img src={foto} alt={p.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+            <section className="cn-peca" key={p.id} onClick={() => navigate('/detalhe/' + p.id)} style={{ position: 'relative', background: '#000', cursor: 'pointer' }}>
+              {foto && <img src={foto} alt={p.nome} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} />}
               {p.percentual_desconto > 0 && (
                 <span style={{ position: 'absolute', top: 60, left: 14, background: '#AA1B2F', color: '#fff', fontSize: 12, padding: '3px 10px', borderRadius: 14, fontFamily: 'Arial, sans-serif' }}>-{p.percentual_desconto}%</span>
               )}
@@ -81,8 +81,8 @@ export default function Home() {
               <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, paddingTop: 70, paddingBottom: 80, paddingLeft: 20, paddingRight: 20, background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.55) 50%, transparent 100%)', color: '#fff' }}>
                 <div style={{ fontSize: 22, marginBottom: 6 }}>{p.nome}</div>
                 <div style={{ fontFamily: 'Arial, sans-serif' }}>
-                  <span style={{ textDecoration: 'line-through', opacity: 0.7, fontSize: 13 }}>R$ {brl(p.preco_base)}</span>
-                  &nbsp;&nbsp;<span style={{ fontSize: 18 }}>R$ {brl(p.preco_promocional)}</span>
+                  {p.percentual_desconto > 0 && <><span style={{ textDecoration: 'line-through', opacity: 0.7, fontSize: 13 }}>R$ {brl(p.preco_base)}</span>&nbsp;&nbsp;</>}
+                  <span style={{ fontSize: 18 }}>R$ {brl(p.preco_promocional)}</span>
                 </div>
                 <div style={{ fontFamily: 'Arial, sans-serif', fontSize: 12, opacity: 0.85, marginTop: 2 }}>{p.parcelas}x sem juros</div>
               </div>

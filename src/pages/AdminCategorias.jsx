@@ -20,7 +20,7 @@ export default function AdminCategorias() {
     const { data: mae } = await supabase.from('categorias').select('id').eq('slug', 'loja').single()
     setMaeId(mae?.id)
 
-    const { data } = await supabase.from('subcategorias').select('id, nome, ordem').order('ordem')
+    const { data } = await supabase.from('subcategorias').select('id, nome, slug, ordem').order('ordem')
     setCats(data || [])
     setCarregando(false)
   }
@@ -29,11 +29,41 @@ export default function AdminCategorias() {
     return txt.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
   }
 
+  // Endereco limpo; so ganha -2, -3... se ja existir
+  function slugUnico(nome, ignorarId) {
+    const base = slugify(nome) || 'categoria'
+    const usados = cats.filter((c) => c.id !== ignorarId).map((c) => c.slug)
+    let slug = base
+    let n = 2
+    while (usados.includes(slug)) {
+      slug = base + '-' + n
+      n++
+    }
+    return slug
+  }
+
+  // Troca a categoria de posicao com a vizinha e renumera a ordem
+  async function mover(i, delta) {
+    const j = i + delta
+    if (j < 0 || j >= cats.length) return
+    const lista = [...cats]
+    const tmp = lista[i]
+    lista[i] = lista[j]
+    lista[j] = tmp
+    setCats(lista.map((c, k) => ({ ...c, ordem: k + 1 })))
+    for (let k = 0; k < lista.length; k++) {
+      if (lista[k].ordem !== k + 1) {
+        const { error } = await supabase.from('subcategorias').update({ ordem: k + 1 }).eq('id', lista[k].id)
+        if (error) { alert('Erro ao reordenar: ' + error.message); carregar(); return }
+      }
+    }
+  }
+
   async function criar() {
     if (!nova.trim()) return
     const ordem = cats.length ? Math.max(...cats.map(c => c.ordem)) + 1 : 1
     const { error } = await supabase.from('subcategorias').insert({
-      categoria_id: maeId, nome: nova.trim(), slug: slugify(nova) + '-' + Date.now(), ordem
+      categoria_id: maeId, nome: nova.trim(), slug: slugUnico(nova), ordem
     })
     if (error) { alert('Erro: ' + error.message); return }
     setNova('')
@@ -42,7 +72,7 @@ export default function AdminCategorias() {
 
   async function salvarEdicao(id) {
     if (!editNome.trim()) return
-    await supabase.from('subcategorias').update({ nome: editNome.trim() }).eq('id', id)
+    await supabase.from('subcategorias').update({ nome: editNome.trim(), slug: slugUnico(editNome, id) }).eq('id', id)
     setEditId(null); setEditNome('')
     carregar()
   }
@@ -72,7 +102,7 @@ export default function AdminCategorias() {
         <div style={{ padding: 18 }}>
           <div style={{ fontSize: 13, fontWeight: 500, color: '#333', marginBottom: 12 }}>Categorias ({cats.length})</div>
           {carregando && <p style={{ color: '#999' }}>Carregando...</p>}
-          {!carregando && cats.map((c) => (
+          {!carregando && cats.map((c, i) => (
             <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 0', borderBottom: '0.5px solid #eee' }}>
               {editId === c.id ? (
                 <>
@@ -82,6 +112,10 @@ export default function AdminCategorias() {
                 </>
               ) : (
                 <>
+                  <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
+                    <span onClick={() => mover(i, -1)} title="Subir" style={{ cursor: i === 0 ? 'default' : 'pointer', color: i === 0 ? '#ddd' : '#AA1B2F', fontSize: 13, padding: '3px 8px' }}>▲</span>
+                    <span onClick={() => mover(i, 1)} title="Descer" style={{ cursor: i === cats.length - 1 ? 'default' : 'pointer', color: i === cats.length - 1 ? '#ddd' : '#AA1B2F', fontSize: 13, padding: '3px 8px' }}>▼</span>
+                  </span>
                   <span style={{ flex: 1, fontSize: 14, color: '#333' }}>{c.nome}</span>
                   <span onClick={() => { setEditId(c.id); setEditNome(c.nome) }} style={{ cursor: 'pointer', fontSize: 16 }} title="Editar">✏️</span>
                   <span onClick={() => excluir(c.id, c.nome)} style={{ cursor: 'pointer', color: '#c0392b', fontSize: 17 }} title="Excluir">🗑</span>

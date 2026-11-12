@@ -27,7 +27,7 @@ export default function LojaFavoritos() {
 
   return (
     <>
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#fff', fontFamily: 'Arial, sans-serif', paddingBottom: 70 }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#fff', fontFamily: 'Arial, sans-serif', paddingBottom: 'calc(96px + env(safe-area-inset-bottom, 0px))' }}>
       <Cabecalho tela="Favoritos" />
 
       <div style={{ flex: 1, overflowY: 'auto', maxWidth: 720, margin: '0 auto', width: '100%', padding: '14px 18px' }}>

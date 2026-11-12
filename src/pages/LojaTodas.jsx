@@ -36,7 +36,7 @@ export default function LojaTodas() {
           <div style={{ textAlign: 'center', color: '#999', padding: 40, fontFamily: 'Georgia, serif' }}>Nenhuma peça cadastrada ainda.</div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 14, padding: '0 14px 16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 14, padding: '0 14px calc(96px + env(safe-area-inset-bottom, 0px))' }}>
           {pecas.map((p) => {
             const fotos = (p.produto_fotos || []).sort((a, b) => a.ordem - b.ordem)
             const capa = fotos[0]?.url

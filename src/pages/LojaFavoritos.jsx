@@ -40,7 +40,7 @@ export default function LojaFavoritos() {
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 14 }}>
           {pecas.map((p) => {
             const fotos = (p.produto_fotos || []).sort((a, b) => a.ordem - b.ordem)
             const capa = fotos[0]?.url

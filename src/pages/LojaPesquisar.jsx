@@ -47,7 +47,7 @@ export default function LojaPesquisar() {
         {buscou && resultados.length === 0 && (
           <div style={{ textAlign: 'center', color: '#999', padding: 30, fontFamily: 'Georgia, serif' }}>Nenhuma peca encontrada.</div>
         )}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 14 }}>
           {resultados.map((p) => {
             const fotos = (p.produto_fotos || []).sort((a, b) => a.ordem - b.ordem)
             const capa = fotos[0]?.url

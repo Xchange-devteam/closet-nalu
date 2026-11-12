@@ -54,7 +54,7 @@ export default function LojaListagem() {
           <div style={{ textAlign: 'center', color: '#999', padding: 40, fontFamily: 'Georgia, serif' }}>Nenhuma peça nesta categoria ainda.</div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, padding: '0 14px 16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 14, padding: '0 14px 16px' }}>
           {pecas.map((p) => {
             const fotos = (p.produto_fotos || []).sort((a, b) => a.ordem - b.ordem)
             const capa = fotos[0]?.url
@@ -69,7 +69,7 @@ export default function LojaListagem() {
                     {capa && <img src={capa} alt={p.nome} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} />}
                   </div>
                 </div>
-                <div style={{ fontFamily: 'Georgia, serif', fontSize: 13, marginTop: 6, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.nome}</div>
+                <div style={{ fontFamily: 'Georgia, serif', fontSize: 13, marginTop: 6, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.3 }}>{p.nome}</div>
                 {p.percentual_desconto > 0 && <div style={{ fontSize: 12, color: '#aaa', textDecoration: 'line-through' }}>R$ {brl(p.preco_base)}</div>}
                 <div style={{ fontSize: 14, fontWeight: 500, color: '#222' }}>R$ {brl(p.preco_promocional)}</div>
                 <div style={{ fontSize: 11, color: '#888' }}>{p.parcelas}x sem juros</div>

@@ -15,7 +15,7 @@ export default function AdminDashboard() {
       setEmail(data.user.email)
 
       const { count: cp } = await supabase.from('produtos').select('*', { count: 'exact', head: true })
-      const { count: cc } = await supabase.from('categorias').select('*', { count: 'exact', head: true })
+      const { count: cc } = await supabase.from('subcategorias').select('*', { count: 'exact', head: true })
       setNProdutos(cp || 0)
       setNCategorias(cc || 0)
     }
@@ -34,7 +34,7 @@ export default function AdminDashboard() {
     { titulo: 'Categorias', sub: `${nCategorias} categorias`, icone: '🗂', cor: '#3B6A9A', bg: '#eef2f6', borda: '#d6dfe8', txt: '#2f5680', rota: '/admin/categorias' },
     { titulo: 'Banner', sub: 'Editar abertura', icone: '🖼', cor: '#8B5A8C', bg: '#f4f0f5', borda: '#e2d6e4', txt: '#7a4a7c', rota: '/admin/banner' },
     { titulo: 'Pedidos', sub: 'Ver vendas', icone: '🛍', cor: '#3B7A5A', bg: '#eef3f0', borda: '#d6e4dc', txt: '#2f6249', rota: '/admin/pedidos' },
-    { titulo: 'Catálogo', sub: 'PDF / link', icone: '📄', cor: '#B5862B', bg: '#f5f1ea', borda: '#e6dccb', txt: '#8a6620', rota: '/admin/catalogo' },
+    { titulo: 'Catálogo', sub: 'PDF / link', icone: '📄', cor: '#B5862B', bg: '#f5f1ea', borda: '#e6dccb', txt: '#8a6620', rota: '/catalogo' },
   ]
 
   return (

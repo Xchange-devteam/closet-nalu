@@ -1,3 +1,4 @@
+import LojaCatalogo from './pages/LojaCatalogo'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { SacolaProvider } from './lib/sacola'
 import { FavoritosProvider } from './lib/favoritos'
@@ -36,6 +37,7 @@ export default function App() {
         <Route path="/sacola" element={<LojaSacola />} />
         <Route path="/pagamento/:id" element={<LojaPagamento />} />
         <Route path="/todas" element={<LojaTodas />} />
+        <Route path="/catalogo" element={<LojaCatalogo />} />
         <Route path="/pesquisar" element={<LojaPesquisar />} />
         <Route path="/perfil" element={<LojaPerfil />} />
         <Route path="/favoritos" element={<LojaFavoritos />} />

@@ -10,9 +10,13 @@ export default function LojaEntrar() {
   const [carregando, setCarregando] = useState(false)
   const navigate = useNavigate()
 
+  // Para onde voltar depois do login (ex.: /entrar?voltar=/sacola)
+  const voltarParam = new URLSearchParams(window.location.search).get('voltar') || '/'
+  const destino = voltarParam.startsWith('/') && !voltarParam.startsWith('//') ? voltarParam : '/'
+
   function pular() {
     localStorage.setItem('closet_nalu_login_pulado', '1')
-    navigate('/')
+    navigate(destino)
   }
 
   async function entrar() {
@@ -25,14 +29,14 @@ export default function LojaEntrar() {
       return
     }
     localStorage.setItem('closet_nalu_login_pulado', '1')
-    navigate('/')
+    navigate(destino)
   }
 
   async function entrarGoogle() {
     setErro(null)
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.origin + '/' },
+      options: { redirectTo: window.location.origin + destino },
     })
     if (error) setErro('Nao foi possivel entrar com o Google.')
   }

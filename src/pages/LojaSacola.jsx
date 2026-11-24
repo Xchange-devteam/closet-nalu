@@ -130,7 +130,7 @@ export default function LojaSacola() {
     const { data } = await supabase.auth.getSession()
     const sessao = data && data.session
     if (sessao == null) {
-      navigate('/entrar')
+      navigate('/entrar?voltar=/sacola')
       return
     }
 

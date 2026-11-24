@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useSacola } from '../lib/sacola'
 import { useFavoritos } from '../lib/favoritos'
 import { corFundo } from '../lib/cores'
+import { rastrear } from '../lib/pixel'
 import Cabecalho from '../components/Cabecalho'
 import BarraNav from '../components/BarraNav'
 
@@ -31,6 +32,7 @@ export default function LojaDetalhe() {
       .single()
     if (data) {
       setPeca(data)
+      rastrear('ViewContent', { content_ids: [data.id], content_name: data.nome, content_type: 'product', value: Number(data.preco_promocional), currency: 'BRL' })
       setFotos((data.produto_fotos || []).sort((a, b) => a.ordem - b.ordem))
     }
     setCarregando(false)
@@ -62,6 +64,7 @@ export default function LojaDetalhe() {
   function adicionarSacola() {
     if (!podeComprar) return
     adicionar(peca, tamanho, cor)
+    rastrear('AddToCart', { content_ids: [peca.id], content_name: peca.nome, content_type: 'product', value: Number(peca.preco_promocional), currency: 'BRL' })
     setAdicionado(true)
     setTimeout(() => setAdicionado(false), 2000)
   }

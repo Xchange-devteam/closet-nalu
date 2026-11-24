@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useSacola } from '../lib/sacola'
 import BarraNav from '../components/BarraNav'
+import { rastrear } from '../lib/pixel'
 import Cabecalho from '../components/Cabecalho'
 
 // Pix fica oculto ate a chave Pix ser cadastrada no Asaas; depois mude para true
@@ -125,6 +126,7 @@ export default function LojaSacola() {
   }
 
   async function finalizar() {
+    rastrear('InitiateCheckout', { value: Number(total), currency: 'BRL', num_items: qtdTotal })
     if (enviando) return
     setErro('')
     const { data } = await supabase.auth.getSession()

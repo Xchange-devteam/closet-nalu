@@ -1,4 +1,5 @@
 import LojaCatalogo from './pages/LojaCatalogo'
+import RastreioPaginas from './lib/RastreioPaginas'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { SacolaProvider } from './lib/sacola'
 import { FavoritosProvider } from './lib/favoritos'
@@ -28,6 +29,7 @@ export default function App() {
     <SacolaProvider>
     <FavoritosProvider>
     <BrowserRouter>
+    <RastreioPaginas />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/categorias" element={<LojaCategorias />} />

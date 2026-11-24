@@ -112,7 +112,7 @@ export default function LojaDetalhe() {
           <span style={{ fontSize: 22, fontWeight: 500, color: '#AA1B2F', marginLeft: peca.percentual_desconto > 0 ? 8 : 0 }}>R$ {brl(peca.preco_promocional)}</span>
           {peca.percentual_desconto > 0 && <span style={{ background: '#AA1B2F', color: '#fff', fontSize: 11, padding: '2px 8px', borderRadius: 12, marginLeft: 8 }}>-{peca.percentual_desconto}%</span>}
         </div>
-        <div style={{ fontSize: 12, color: '#888', marginBottom: 18 }}>{peca.parcelas}x de R$ {brl(valorParcela)} sem juros</div>
+        <div style={{ marginBottom: 18 }} />
 
         {peca.descricao && (
           <div style={{ marginBottom: 20 }}>

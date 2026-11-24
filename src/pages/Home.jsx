@@ -84,7 +84,6 @@ export default function Home() {
                   {p.percentual_desconto > 0 && <><span style={{ textDecoration: 'line-through', opacity: 0.7, fontSize: 13 }}>R$ {brl(p.preco_base)}</span>&nbsp;&nbsp;</>}
                   <span style={{ fontSize: 18 }}>R$ {brl(p.preco_promocional)}</span>
                 </div>
-                <div style={{ fontFamily: 'Arial, sans-serif', fontSize: 12, opacity: 0.85, marginTop: 2 }}>{p.parcelas}x sem juros</div>
               </div>
             </section>
           )

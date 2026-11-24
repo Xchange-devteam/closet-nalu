@@ -67,7 +67,6 @@ export default function LojaPeca() {
           {peca.percentual_desconto > 0 && <span style={{ textDecoration: 'line-through', opacity: 0.7, fontSize: 13, marginRight: 8 }}>R$ {brl(peca.preco_base)}</span>}
           <span style={{ fontSize: 19 }}>R$ {brl(peca.preco_promocional)}</span>
         </div>
-        <div style={{ fontSize: 12, opacity: 0.85, marginTop: 2 }}>{peca.parcelas}x sem juros</div>
       </div>
 
     </div>

@@ -72,7 +72,6 @@ export default function LojaListagem() {
                 <div style={{ fontFamily: 'Georgia, serif', fontSize: 13, marginTop: 6, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.3 }}>{p.nome}</div>
                 {p.percentual_desconto > 0 && <div style={{ fontSize: 12, color: '#aaa', textDecoration: 'line-through' }}>R$ {brl(p.preco_base)}</div>}
                 <div style={{ fontSize: 14, fontWeight: 500, color: '#222' }}>R$ {brl(p.preco_promocional)}</div>
-                <div style={{ fontSize: 11, color: '#888' }}>{p.parcelas}x sem juros</div>
               </div>
             )
           })}

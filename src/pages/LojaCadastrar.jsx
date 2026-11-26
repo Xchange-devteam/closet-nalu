@@ -12,6 +12,11 @@ export default function LojaCadastrar() {
   const [carregando, setCarregando] = useState(false)
   const navigate = useNavigate()
 
+  // Para onde voltar depois do cadastro (ex.: /cadastrar?voltar=/sacola)
+  const voltarParam = new URLSearchParams(window.location.search).get('voltar') || '/'
+  const destino = voltarParam.startsWith('/') && !voltarParam.startsWith('//') ? voltarParam : '/'
+  const linkEntrar = destino === '/sacola' ? '/entrar?voltar=/sacola' : '/entrar'
+
   async function cadastrar() {
     setErro(null)
     if (!nome.trim()) { setErro('Informe seu nome.'); return }
@@ -29,7 +34,7 @@ export default function LojaCadastrar() {
     }
     localStorage.setItem('closet_nalu_login_pulado', '1')
     if (data.session) {
-      navigate('/')
+      navigate(destino)
     } else {
       setSucesso(true)
       setCarregando(false)
@@ -51,7 +56,7 @@ export default function LojaCadastrar() {
         <div style={{ fontFamily: 'Georgia, serif', fontSize: 26, letterSpacing: 4, color: '#AA1B2F', marginBottom: 20 }}>CLOSET NALU</div>
         <div style={{ fontSize: 16, color: '#333', marginBottom: 10 }}>Conta criada!</div>
         <div style={{ fontSize: 13, color: '#777', maxWidth: 300, marginBottom: 28 }}>Enviamos um e-mail de confirmacao para {email}. Confirme para ativar sua conta.</div>
-        <Link to="/entrar" style={{ color: '#AA1B2F', textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>Ir para o login</Link>
+        <Link to={linkEntrar} style={{ color: '#AA1B2F', textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>Ir para o login</Link>
       </div>
     )
   }
@@ -103,7 +108,7 @@ export default function LojaCadastrar() {
         </button>
 
         <div style={{ fontSize: 13, color: '#666', marginTop: 24, textAlign: 'center' }}>
-          Ja tem conta? <Link to="/entrar" style={{ color: '#AA1B2F', textDecoration: 'none', fontWeight: 500 }}>Entrar</Link>
+          Ja tem conta? <Link to={linkEntrar} style={{ color: '#AA1B2F', textDecoration: 'none', fontWeight: 500 }}>Entrar</Link>
         </div>
       </div>
     </div>

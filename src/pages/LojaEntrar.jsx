@@ -13,6 +13,7 @@ export default function LojaEntrar() {
   // Para onde voltar depois do login (ex.: /entrar?voltar=/sacola)
   const voltarParam = new URLSearchParams(window.location.search).get('voltar') || '/'
   const destino = voltarParam.startsWith('/') && !voltarParam.startsWith('//') ? voltarParam : '/'
+  const vindoDaSacola = destino === '/sacola'
 
   function pular() {
     localStorage.setItem('closet_nalu_login_pulado', '1')
@@ -48,6 +49,13 @@ export default function LojaEntrar() {
         <div style={{ fontFamily: 'Georgia, serif', fontSize: 30, letterSpacing: 5, color: '#AA1B2F', marginBottom: 6 }}>CLOSET NALU</div>
         <div style={{ fontSize: 12, letterSpacing: 2, color: '#aaa', textTransform: 'uppercase', marginBottom: 36 }}>Entre na sua conta</div>
 
+        {vindoDaSacola && (
+          <div style={{ width: '100%', boxSizing: 'border-box', background: '#fdf2f3', border: '1px solid #f0c9cf', borderRadius: 10, padding: '14px 16px', marginTop: -16, marginBottom: 24, textAlign: 'center', fontSize: 14, color: '#333', lineHeight: 1.5 }}>
+            <div style={{ fontSize: 15, fontWeight: 600, color: '#AA1B2F', marginBottom: 4 }}>🛍️ Quase lá!</div>
+            Para finalizar sua compra, entre na sua conta ou faça seu cadastro. É rapidinho, e as peças continuam guardadas na sua sacola.
+          </div>
+        )}
+
         <div style={{ width: '100%', marginBottom: 16 }}>
           <label style={{ fontSize: 12, color: '#888', display: 'block', marginBottom: 6 }}>E-mail</label>
           <div style={{ display: 'flex', alignItems: 'center', border: '0.5px solid #ddd', borderRadius: 8, padding: '0 12px', height: 44 }}>
@@ -81,11 +89,11 @@ export default function LojaEntrar() {
         </button>
 
         <div style={{ fontSize: 13, color: '#666', marginTop: 22, marginBottom: 18, textAlign: 'center' }}>
-          Nao tem conta? <Link to="/cadastrar" style={{ color: '#AA1B2F', textDecoration: 'none', fontWeight: 500 }}>Criar conta</Link>
+          Nao tem conta? <Link to={vindoDaSacola ? '/cadastrar?voltar=/sacola' : '/cadastrar'} style={{ color: '#AA1B2F', textDecoration: 'none', fontWeight: 500 }}>Criar conta</Link>
         </div>
 
         <button onClick={pular} style={{ width: '100%', height: 44, background: 'transparent', color: '#777', border: '1px solid #ddd', borderRadius: 8, fontSize: 14, cursor: 'pointer' }}>
-          Continuar sem login &rarr;
+          {vindoDaSacola ? <>&larr; Voltar para a sacola</> : <>Continuar sem login &rarr;</>}
         </button>
       </div>
     </div>
